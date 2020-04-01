@@ -16,6 +16,7 @@
  * </pre>
  */
 #include "MeOrion.h"
+#include "MeBuzzer.h"
 
 MeUltrasonicSensor ultraSensor(PORT_7); /* Ultrasonic module can ONLY be connected to port 3, 4, 6, 7, 8 of base shield. */
 
