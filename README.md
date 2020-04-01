@@ -1,4 +1,4 @@
 # Hardware
 
 ## Description
-This repository belongs to the Hardware guys :)
+This repository belongs to the Hardware guys :D
