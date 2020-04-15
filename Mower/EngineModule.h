@@ -1,7 +1,6 @@
 #pragma once 
 #include <MeEncoderOnBoard.h>
 
-
 class EngineModule{
 
 public:
@@ -9,13 +8,13 @@ public:
 struct cmd
     {
         int speed;
-        int turnRaduis;
+        int turnRadius;
         int time_ms;
     };
 
 EngineModule();
-EngineModule(int, int);
 
+EngineModule(int, int);
 
 void run();
 
@@ -25,17 +24,17 @@ bool isReady();
 
 void stopp();
 
-
-
 private:
 
-MeEncoderOnBoard *Encoder_1;
-MeEncoderOnBoard *Encoder_2;
+MeEncoderOnBoard *Wheel_Right;
+MeEncoderOnBoard *Wheel_Left;
 
 void execute_command(cmd*);
 
 bool _ready;
 
 cmd *current_command;
+
+const float _wheelToWheelGap = 14.6;
 
 };

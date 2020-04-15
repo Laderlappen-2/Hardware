@@ -1,25 +1,20 @@
 #include "EngineModule.h"
-  //Encoder_1.setMotorPwm(-255);
-  //Encoder_2.setMotorPwm(255);
-
-
 
 EngineModule::EngineModule(){}
 
 EngineModule::EngineModule(int slot1, int slot2)
 {
-  Encoder_1 = new MeEncoderOnBoard(slot1);
-  Encoder_2 = new MeEncoderOnBoard(slot2);
+  Wheel_Right = new MeEncoderOnBoard(slot1);
+  Wheel_Left = new MeEncoderOnBoard(slot2);
   
 }
-
   
 void EngineModule::setCommand(cmd command)
 {
     if (current_command == nullptr)
        current_command = new cmd;
     current_command->speed = command.speed;
-    current_command->turnRaduis = command.turnRaduis; 
+    current_command->turnRadius = command.turnRadius; 
     current_command->time_ms = command.time_ms; 
 
 }
@@ -38,8 +33,8 @@ void EngineModule::run()
     wait,  
   };
   
-  Encoder_1->loop();
-  Encoder_2->loop();
+  Wheel_Right->loop();
+  Wheel_Left->loop();
   static state_s state = idle;
   static long startWait = 0;
   
@@ -78,14 +73,28 @@ void EngineModule::run()
 void EngineModule::execute_command(cmd *command)
 {
   constrain(command->speed, -255, 255);
-  Encoder_1->setMotorPwm(-command->speed);
-  Encoder_2->setMotorPwm(command->speed);
-
   
+  float rRight, rLeft;
+  rRight = command->turnRadius - _wheelToWheelGap / 2;
+  rLeft = command->turnRadius + _wheelToWheelGap / 2;
+
+  if(command->turnRadius > 0)
+  {
+    float ratio = rRight / rLeft;
+    Wheel_Right->setMotorPwm(-command->speed * ratio);
+    Wheel_Left->setMotorPwm(command->speed);
+  }
+
+  else
+  {
+    float ratio = rLeft / rRight;
+    Wheel_Right->setMotorPwm(-command->speed);
+    Wheel_Left->setMotorPwm(command->speed * ratio);
+  }
 }
 
 void EngineModule::stopp()
 {
-  Encoder_1->setMotorPwm(0);
-  Encoder_2->setMotorPwm(0);
+  Wheel_Right->setMotorPwm(0);
+  Wheel_Left->setMotorPwm(0);
 }
