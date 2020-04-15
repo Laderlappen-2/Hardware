@@ -7,16 +7,18 @@ void setup()
 {
   //Serial.begin(9600);
   
-  EngineModule::cmd command = {200, 0, 2000};
+  EngineModule::cmd command = {150, -30, 1500};
   engine.setCommand(command);
 }
 
 
 void loop()
 {  
-  if(engine.isReady())
-  {
-    engine.setCommand(EngineModule::cmd{-100, 0, 2000});
-  }
-  engine.run();
+    static int increase=0;
+    if(engine.isReady())
+    {
+        engine.setCommand(EngineModule::cmd{10 + increase, 50, 500});
+        increase += 5;
+    }
+    engine.run();
 }

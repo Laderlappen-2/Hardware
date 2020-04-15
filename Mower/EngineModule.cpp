@@ -72,11 +72,11 @@ void EngineModule::run()
 
 void EngineModule::execute_command(cmd *command)
 {
-  constrain(command->speed, -255, 255);
+  command->speed = constrain(command->speed, -255, 255);
   
   float rRight, rLeft;
-  rRight = command->turnRadius - _wheelToWheelGap / 2;
-  rLeft = command->turnRadius + _wheelToWheelGap / 2;
+  rRight = command->turnRadius - (_wheelToWheelGap / 2);
+  rLeft = command->turnRadius + (_wheelToWheelGap / 2);
 
   if(command->turnRadius > 0)
   {
