@@ -1,10 +1,10 @@
 #include "CommandHandler.h"
 
-
+#include <MeEncoderOnBoard.h>
 
 CommandHandler::CommandHandler()
 {
-	
+
 }
 void CommandHandler::init()
 {
