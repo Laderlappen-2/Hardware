@@ -1,4 +1,4 @@
-#include <MeAuriga.h>
+#pragma once 
 #include <MeEncoderOnBoard.h>
 
 
@@ -17,25 +17,25 @@ EngineModule();
 EngineModule(int, int);
 
 
-void run(){}
+void run();
 
-void setCommand(cmd){}
+void setCommand(cmd);
 
-bool isReady(){}
+bool isReady();
 
-void stopp(){}
+void stopp();
 
 
 
 private:
 
-MeEncoderOnBoard Encoder_1;
-MeEncoderOnBoard Encoder_2;
+MeEncoderOnBoard *Encoder_1;
+MeEncoderOnBoard *Encoder_2;
 
-void execute_command(cmd){}
+void execute_command(cmd*);
 
 bool _ready;
 
-cmd current_command;
+cmd *current_command;
 
 };

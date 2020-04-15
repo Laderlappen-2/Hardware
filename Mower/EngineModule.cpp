@@ -8,21 +8,25 @@ EngineModule::EngineModule(){}
 
 EngineModule::EngineModule(int slot1, int slot2)
 {
-  Encoder_1 = MeEncoderOnBoard(slot1);
-  Encoder_2 = MeEncoderOnBoard(slot2);
+  Encoder_1 = new MeEncoderOnBoard(slot1);
+  Encoder_2 = new MeEncoderOnBoard(slot2);
   
 }
 
   
 void EngineModule::setCommand(cmd command)
 {
-  current_command = command; 
-  
+    if (current_command == nullptr)
+       current_command = new cmd;
+    current_command->speed = command.speed;
+    current_command->turnRaduis = command.turnRaduis; 
+    current_command->time_ms = command.time_ms; 
+
 }
 
 bool EngineModule::isReady()
 {
-  return ready;
+  return _ready;
 }
 
 void EngineModule::run()
@@ -34,19 +38,21 @@ void EngineModule::run()
     wait,  
   };
   
-  Encoder_1.loop();
-  Encoder_2.loop();
+  Encoder_1->loop();
+  Encoder_2->loop();
   static state_s state = idle;
   static long startWait = 0;
   
   switch(state)
   {
     case idle:
-    if (current_command != null)
+    if (current_command != NULL)
     {
       _ready = false;
       state = update;
     }
+    else 
+      stopp();
       break;
     case update:
       execute_command(current_command);
@@ -54,9 +60,10 @@ void EngineModule::run()
       state = wait;
       break;
     case wait:
-      if (millis() > startWait + current_command.time_ms)
+      if (millis() > startWait + current_command->time_ms)
       {
-        current_command = NULL;
+        delete(current_command);
+        current_command = nullptr;
         _ready = true;
         state = idle;
         
@@ -68,11 +75,17 @@ void EngineModule::run()
   }
 }
 
-void EngineModule::execute_command(cmd command)
+void EngineModule::execute_command(cmd *command)
 {
-  constrain(command.speed, -255, 255);
-  Encoder_1.setMotorPwm(command.speed);
-  Encoder_2.setMotorPwm(-command.speed);
+  constrain(command->speed, -255, 255);
+  Encoder_1->setMotorPwm(-command->speed);
+  Encoder_2->setMotorPwm(command->speed);
 
   
+}
+
+void EngineModule::stopp()
+{
+  Encoder_1->setMotorPwm(0);
+  Encoder_2->setMotorPwm(0);
 }
