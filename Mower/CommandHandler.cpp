@@ -1,32 +1,33 @@
 #include "CommandHandler.h"
-
 #include <MeEncoderOnBoard.h>
 
 CommandHandler::CommandHandler()
 {
-
 }
-void CommandHandler::init()
+void CommandHandler::init(int slot1,int slot2)
 {
+	engine = new EngineModule(slot1,slot2);
 }
-
-
 
 
 
 CommandHandler::~CommandHandler()
-{	delete instance;}
-
-
+{	
+	delete engine;
+}
+/*
 CommandHandler * CommandHandler::getInstance()
 {
-	if (instance == nullptr)
-		instance = new CommandHandler();
-	return instance;
-}
+	if (CommandHandler::instance == nullptr)
+		CommandHandler::instance = new CommandHandler();
+	return CommandHandler::instance;
+}*/
+
 
 void CommandHandler::run()
 {
+	engine->run();
+
 	enum state_e
 	{
 		idle,
@@ -66,27 +67,27 @@ bool CommandHandler::runSequence()
 		check,
 	};
 	static state_s state = send;
-	static cmdSequense* sequence = nullptr;
+	static cmdSequense sequence;
 
 	switch (state)
 	{
 	case load:// loads the front sequense from the queue
 		if (commandQueue.isEmpty())
 			return true;
-		sequence = &commandQueue.front();
+		sequence = commandQueue.front();
 		state = wait;
 		break;
 	case wait:// waits to run the sequense until the engine is ready
-		//TODO implement ready function in engine to check here
-		//if (ready()) state = send;
+		if (engine->isReady()) 
+			state = send;
 		break;
 	case send:// sends the front cmd in the sequense to the engine and removes it from the queue
-		sendCmdToEngine(sequence->sequense.front());
-		sequence->sequense.pop();
+		sendCmdToEngine(sequence.sequense.front());
+		sequence.sequense.pop();
 		state = check;
 		break;
 	case check://checks if end of sequens and returns trur if it is.
-		if (sequence->sequense.isEmpty())
+		if (sequence.sequense.isEmpty())
 		{
 			state = load;
 			return true;
@@ -101,14 +102,14 @@ bool CommandHandler::runSequence()
 }
 
 
-void CommandHandler::addCommand(cmd command, void(*callback)(void))
+void CommandHandler::addCommand(EngineModule::cmd command, void(*callback)(void))
 {
-	QueueArray<cmd> cmdQueue;
+	QueueArray<EngineModule::cmd> cmdQueue;
 	cmdQueue.push(command);
 	commandQueue.push(cmdSequense {cmdQueue, callback});
 }
 
-void CommandHandler::addCommand(cmd command[],int size, void(*callback)(void))
+void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*callback)(void))
 {
 	cmdSequense sequense;
 	for (int i = 0; i < size; i++)
@@ -129,14 +130,7 @@ void CommandHandler::clear()
 }
 
 void CommandHandler::stopEngine()
-{
+{	engine->stopp();}
 
-	//TODO implement when engine is ready 
-}
-
-
-
-void CommandHandler::sendCmdToEngine(cmd)
-{
-	//TODO implement when engine is ready
-}
+void CommandHandler::sendCmdToEngine(EngineModule::cmd command)
+{	engine->setCommand(command);}
