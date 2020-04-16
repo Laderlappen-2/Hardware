@@ -32,10 +32,8 @@ void EngineModule::run()
     update,
     wait,  
   };
-
-  Wheel_Right->updateSpeed();
-  Wheel_Left->updateSpeed();
-  Wheel_Right->loop();
+  
+  Wheel_Right->loop(); //run MeEncoderOnBoard state machines
   Wheel_Left->loop();
   static state_s state = idle;
   static long startWait = 0;
@@ -43,7 +41,7 @@ void EngineModule::run()
   switch(state)
   {
     case idle:
-    if (current_command != NULL)
+    if (current_command != NULL) //if we have a command incomming 
     {
       _ready = false;
       state = update;
@@ -53,14 +51,14 @@ void EngineModule::run()
       break;
     case update:
       execute_command(current_command);
-      startWait = millis();
+      startWait = millis(); // initiate timer
       state = wait;
       break;
     case wait:
-      if (millis() > startWait + current_command->time_ms)
+      if (millis() > startWait + current_command->time_ms) // make sure we run the set time
       {
-        delete(current_command);
-        current_command = nullptr;
+        delete(current_command);   //preventing memory leak
+        current_command = nullptr;  
         _ready = true;
         state = idle;
         
@@ -74,12 +72,9 @@ void EngineModule::run()
 
 void EngineModule::execute_command(cmd *command)
 {
-  //Wheel_Right->setMotorPwm(-(60+17));
-  //Wheel_Left->setMotorPwm(60);
-  
-  command->speed = constrain(command->speed, -255, 255);
+  command->speed = constrain(command->speed, -255, 255); // returns a safe value 
 
-  if (command->turnRadius == NO_TURN)
+  if (command->turnRadius == NO_TURN) // if we want to drive exaclty forward
   {
     Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
     Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
@@ -87,21 +82,22 @@ void EngineModule::execute_command(cmd *command)
   }
   
   float rRight, rLeft;
-  rRight = command->turnRadius - (_wheelToWheelGap / 2);
+  rRight = command->turnRadius - (_wheelToWheelGap / 2); 
+  // compensate for the physical distance between the wheels
   rLeft = command->turnRadius + (_wheelToWheelGap / 2);
 
-  if(command->turnRadius > 0)
+  if(command->turnRadius > 0) // turn right
   {
-    float ratio = rRight / rLeft;
-    Wheel_Right->setMotorPwm(-command->speed * ratio - _rightWheelOffset);
+    float ratio = rRight / rLeft; // find a slower speed for the inner motor 
+    Wheel_Right->setMotorPwm(-command->speed * ratio - _rightWheelOffset); // reduce the rWheel turn speed
     Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
   }
 
-  else
+  else// turn left
   {
-    float ratio = rLeft / rRight;
+    float ratio = rLeft / rRight; // find a slower speed for the inner motor
     Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
-    Wheel_Left->setMotorPwm(command->speed * ratio + _leftWheelOffset);
+    Wheel_Left->setMotorPwm(command->speed * ratio + _leftWheelOffset); // reduce the lWheel turn speed
   }
 
   
