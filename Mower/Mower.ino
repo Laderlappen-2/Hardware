@@ -6,17 +6,18 @@ CommandHandler *commandHandler;
 
 void setup()
 {
-  Serial.begin(9600);
-  
-  //commandHandler = CommandHandler::getInstance();
-  commandHandler = new CommandHandler();
-  commandHandler->init(SLOT1,SLOT2);
-  setTestSequence();
+	  Serial.begin(9600);
+
+	  //commandHandler = CommandHandler::getInstance();
+	  commandHandler = new CommandHandler();
+	  commandHandler->init(SLOT1,SLOT2);
+	  setTestSequence();
 
 }
 
 void setTestSequence()
 {
+	Serial.println("Adding cmd Sequence");
 	//								speed,	turn,		ms
 	EngineModule::cmd sequence[] = {{100,	NO_TURN,	500},
 									{200,	7,			50},
@@ -30,5 +31,4 @@ void setTestSequence()
 void loop()
 {  
 	commandHandler->run();
-
 }

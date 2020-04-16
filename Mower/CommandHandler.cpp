@@ -1,5 +1,6 @@
 #include "CommandHandler.h"
 #include <MeEncoderOnBoard.h>
+#include <Arduino.h>
 
 CommandHandler::CommandHandler()
 {
@@ -41,7 +42,12 @@ void CommandHandler::run()
 	{
 	case idle://wait until there is a sequense to run
 		if (!commandQueue.isEmpty())
+		{
 			state = doSequence;
+			
+			Serial.print("Starting sequence ");
+			Serial.println(commandQueue.count);
+		}
 		break;
 	case doSequence:// runs the sequense and waits until it's done
 		if (runSequence())
@@ -50,6 +56,8 @@ void CommandHandler::run()
 	case callback:// calls thr callback function (if there is any) and removes the sequense from the queue
 		if (commandQueue.front().callback != nullptr)
 			commandQueue.front().callback();
+		Serial.println("Sequence Done ");
+		Serial.print(commandQueue.count);
 		commandQueue.pop();
 		state = idle;
 		break;
@@ -75,18 +83,26 @@ bool CommandHandler::runSequence()
 		if (commandQueue.isEmpty())
 			return true;
 		sequence = commandQueue.front();
+		state = send;
+		break;
+
+	case send:// sends the front cmd in the sequense to the engine and removes it from the queue
+		if (!engine->isReady())
+			break;
+		Serial.print("\tSending cmd ");
+		Serial.println(sequence.sequense.count());
+		sendCmdToEngine(sequence.sequense.front());
+		sequence.sequense.pop();
 		state = wait;
+
+		Serial.print("\tWaiting...");
 		break;
 	case wait:// waits to run the sequense until the engine is ready
 		if (engine->isReady()) 
-			state = send;
-		break;
-	case send:// sends the front cmd in the sequense to the engine and removes it from the queue
-		sendCmdToEngine(sequence.sequense.front());
-		sequence.sequense.pop();
-		state = check;
+			state = check;
 		break;
 	case check://checks if end of sequens and returns trur if it is.
+		Serial.println("Done.");
 		if (sequence.sequense.isEmpty())
 		{
 			state = load;
