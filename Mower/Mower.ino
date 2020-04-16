@@ -1,27 +1,34 @@
 #include "MeAuriga.h"
-#include "EngineModule.h"
+#include "CommandHandler.h"
 
-EngineModule engine = EngineModule(SLOT1, SLOT2);
+
+CommandHandler *commandHandler;
 
 void setup()
 {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   
-  EngineModule::cmd command = {150, NO_TURN, 2000};
-  engine.setCommand(command);
-  
+  //commandHandler = CommandHandler::getInstance();
+  commandHandler = new CommandHandler();
+  commandHandler->init(SLOT1,SLOT2);
+  setTestSequence();
+
 }
 
+void setTestSequence()
+{
+	//								speed,	turn,		ms
+	EngineModule::cmd sequence[] = {{100,	NO_TURN,	500},
+									{200,	7,			50},
+									{-150,	NO_TURN,	250},
+									{200,	-7,			50},
+									{-100,	30,			500}, };
+
+	commandHandler->addCommand(sequence, 5, setTestSequence);
+}
 
 void loop()
 {  
-    static int increase=0;
-    if(engine.isReady())
-    {
-        //EngineModule::cmd command = {150, -7, 1500};
-        //engine.setCommand(command);
-        engine.setCommand(EngineModule::cmd{10 + increase, 0, 500});
-        increase += 5;
-    }
-    engine.run();
+	commandHandler->run();
+
 }
