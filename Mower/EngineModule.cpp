@@ -16,7 +16,7 @@ void EngineModule::setCommand(cmd command)
     current_command->speed = command.speed;
     current_command->turnRadius = command.turnRadius; 
     current_command->time_ms = command.time_ms; 
-
+    _ready = false;
 }
 
 bool EngineModule::isReady()
@@ -32,7 +32,9 @@ void EngineModule::run()
     update,
     wait,  
   };
-  
+
+  Wheel_Right->updateSpeed();
+  Wheel_Left->updateSpeed();
   Wheel_Right->loop();
   Wheel_Left->loop();
   static state_s state = idle;
@@ -72,7 +74,17 @@ void EngineModule::run()
 
 void EngineModule::execute_command(cmd *command)
 {
+  //Wheel_Right->setMotorPwm(-(60+17));
+  //Wheel_Left->setMotorPwm(60);
+  
   command->speed = constrain(command->speed, -255, 255);
+
+  if (command->turnRadius == NO_TURN)
+  {
+    Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
+    Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
+    return;
+  }
   
   float rRight, rLeft;
   rRight = command->turnRadius - (_wheelToWheelGap / 2);
@@ -81,16 +93,18 @@ void EngineModule::execute_command(cmd *command)
   if(command->turnRadius > 0)
   {
     float ratio = rRight / rLeft;
-    Wheel_Right->setMotorPwm(-command->speed * ratio);
-    Wheel_Left->setMotorPwm(command->speed);
+    Wheel_Right->setMotorPwm(-command->speed * ratio - _rightWheelOffset);
+    Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
   }
 
   else
   {
     float ratio = rLeft / rRight;
-    Wheel_Right->setMotorPwm(-command->speed);
-    Wheel_Left->setMotorPwm(command->speed * ratio);
+    Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
+    Wheel_Left->setMotorPwm(command->speed * ratio + _leftWheelOffset);
   }
+
+  
 }
 
 void EngineModule::stopp()

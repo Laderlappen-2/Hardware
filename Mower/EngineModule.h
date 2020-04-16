@@ -5,6 +5,8 @@ class EngineModule{
 
 public:
 
+#define NO_TURN 3001
+
 struct cmd
     {
         int speed;
@@ -31,10 +33,12 @@ MeEncoderOnBoard *Wheel_Left;
 
 void execute_command(cmd*);
 
-bool _ready;
+bool _ready = true;
 
 cmd *current_command;
 
 const float _wheelToWheelGap = 14.6;
 
+const int _rightWheelOffset = 17;
+const int _leftWheelOffset = 0;
 };
