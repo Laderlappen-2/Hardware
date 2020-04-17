@@ -2,8 +2,11 @@
 
 #include <stdlib.h>
 #include <Arduino.h>
-#include <QueueArray.h>
+//#include <QueueArray.h>
+
+
 #include "EngineModule.h"
+#include "Queue.h"
 
 using namespace std;
 
@@ -13,7 +16,8 @@ public:
 
 	struct cmdSequense
 	{		
-		QueueArray<EngineModule::cmd> sequense;
+		//QueueArray<EngineModule::cmd> sequense;
+		Queue<EngineModule::cmd> sequense;
 		void(*callback)(void);
 	};
 
@@ -47,6 +51,7 @@ private:
 
 	//static CommandHandler* instance;
 	EngineModule* engine;
-	QueueArray<cmdSequense> commandQueue;
+	//QueueArray<cmdSequense> commandQueue;
+	Queue<cmdSequense> commandQueue;
 
 };

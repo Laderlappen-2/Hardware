@@ -28,7 +28,7 @@ CommandHandler * CommandHandler::getInstance()
 void CommandHandler::run()
 {
 	engine->run();
-
+	
 	enum state_e
 	{
 		idle,
@@ -46,7 +46,7 @@ void CommandHandler::run()
 			state = doSequence;
 			
 			Serial.print("Starting sequence ");
-			Serial.println(commandQueue.count);
+			Serial.println(commandQueue.count());
 		}
 		break;
 	case doSequence:// runs the sequense and waits until it's done
@@ -57,8 +57,8 @@ void CommandHandler::run()
 		if (commandQueue.front().callback != nullptr)
 			commandQueue.front().callback();
 		Serial.println("Sequence Done ");
-		Serial.print(commandQueue.count);
-		commandQueue.pop();
+		Serial.print(commandQueue.count());
+		commandQueue.dequeue();
 		state = idle;
 		break;
 	default:
@@ -74,15 +74,19 @@ bool CommandHandler::runSequence()
 		send,
 		check,
 	};
-	static state_s state = send;
-	static cmdSequense sequence;
+	static state_s state = load;
+	static cmdSequense* sequence = nullptr;
 
 	switch (state)
 	{
 	case load:// loads the front sequense from the queue
 		if (commandQueue.isEmpty())
+		{
+			Serial.println("\tEmpty sequence");
 			return true;
-		sequence = commandQueue.front();
+		}
+		sequence = &commandQueue.front();
+
 		state = send;
 		break;
 
@@ -90,9 +94,8 @@ bool CommandHandler::runSequence()
 		if (!engine->isReady())
 			break;
 		Serial.print("\tSending cmd ");
-		Serial.println(sequence.sequense.count());
-		sendCmdToEngine(sequence.sequense.front());
-		sequence.sequense.pop();
+		Serial.println(sequence->sequense.count());
+		sendCmdToEngine(sequence->sequense.dequeue());
 		state = wait;
 
 		Serial.print("\tWaiting...");
@@ -101,9 +104,9 @@ bool CommandHandler::runSequence()
 		if (engine->isReady()) 
 			state = check;
 		break;
-	case check://checks if end of sequens and returns trur if it is.
+	case check://checks if end of sequens and returns true if it is.
 		Serial.println("Done.");
-		if (sequence.sequense.isEmpty())
+		if (sequence->sequense.isEmpty())
 		{
 			state = load;
 			return true;
@@ -120,9 +123,10 @@ bool CommandHandler::runSequence()
 
 void CommandHandler::addCommand(EngineModule::cmd command, void(*callback)(void))
 {
-	QueueArray<EngineModule::cmd> cmdQueue;
-	cmdQueue.push(command);
-	commandQueue.push(cmdSequense {cmdQueue, callback});
+	//QueueArray<EngineModule::cmd> cmdQueue;
+	Queue<EngineModule::cmd> cmdQueue;
+	cmdQueue.enqueue(command);
+	commandQueue.enqueue(cmdSequense {cmdQueue, callback});
 }
 
 void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*callback)(void))
@@ -130,19 +134,19 @@ void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*call
 	cmdSequense sequense;
 	for (int i = 0; i < size; i++)
 	{
-		sequense.sequense.push(command[i]);
+		sequense.sequense.enqueue(command[i]);
 	}
 	sequense.callback = callback;
-	commandQueue.push(sequense);
+	commandQueue.enqueue(sequense);
 }
 
 void CommandHandler::addCommand(cmdSequense commandSeq)
-{	commandQueue.push(commandSeq);}
+{	commandQueue.enqueue(commandSeq);}
 
 void CommandHandler::clear()
 {	
 	while (!commandQueue.isEmpty())
-		commandQueue.pop();
+		commandQueue.dequeue();
 }
 
 void CommandHandler::stopEngine()
