@@ -35,7 +35,7 @@ void execute_command(cmd*);
 
 bool _ready = true;
 
-cmd *current_command;
+cmd current_command;
 
 const float _wheelToWheelGap = 14.6;
 
