@@ -11,16 +11,29 @@ EngineModule::EngineModule(int slot1, int slot2)
   
 void EngineModule::setCommand(cmd command)
 {
-    if (current_command == nullptr)
-       current_command = new cmd;
-    current_command->speed = command.speed;
-    current_command->turnRadius = command.turnRadius; 
-    current_command->time_ms = command.time_ms; 
+    Serial.print("\nsetCommand START!!!!!");
+    //delay(1);
+    /*if (current_command == nullptr)
+    {
+       Serial.print("\nIFF START!!!!!(engine)");
+       current_command = new cmd{0,0,0};
+       Serial.print("\nIFF END!!!!!(engine)");
+    }*/
+    
+    current_command.speed = command.speed;
+    current_command.turnRadius = command.turnRadius; 
+    current_command.time_ms = command.time_ms; 
+    
+    //*current_command = command;
+    
     _ready = false;
+    Serial.print("setCommand END!!!!!");
 }
 
 bool EngineModule::isReady()
 {
+  //Serial.print((current_command == nullptr) ? "Ready" : "Note ready");
+  //return current_command == nullptr;
   return _ready;
 }
 
@@ -33,8 +46,6 @@ void EngineModule::run()
     wait,  
   };
 
-  Wheel_Right->updateSpeed();
-  Wheel_Left->updateSpeed();
   Wheel_Right->loop();
   Wheel_Left->loop();
   static state_s state = idle;
@@ -43,24 +54,24 @@ void EngineModule::run()
   switch(state)
   {
     case idle:
-    if (current_command != NULL)
+    if (!isReady())
     {
-      _ready = false;
+      //_ready = false;
       state = update;
     }
     else 
       stopp();
       break;
     case update:
-      execute_command(current_command);
+      execute_command(&current_command);
       startWait = millis();
       state = wait;
       break;
     case wait:
-      if (millis() > startWait + current_command->time_ms)
+      if (millis() > startWait + current_command.time_ms)
       {
-        delete(current_command);
-        current_command = nullptr;
+        //delete(current_command);
+        //current_command = nullptr;
         _ready = true;
         state = idle;
         
@@ -74,9 +85,6 @@ void EngineModule::run()
 
 void EngineModule::execute_command(cmd *command)
 {
-  //Wheel_Right->setMotorPwm(-(60+17));
-  //Wheel_Left->setMotorPwm(60);
-  
   command->speed = constrain(command->speed, -255, 255);
 
   if (command->turnRadius == NO_TURN)
