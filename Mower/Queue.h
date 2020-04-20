@@ -21,7 +21,8 @@ public:
 	//returns trur if there is no items in the queue
 	bool isEmpty();
 
-
+	//returns an exact copy of the queue
+	Queue<T> copy();
 
 private:
 
@@ -103,6 +104,23 @@ template<class T>
 inline bool Queue<T>::isEmpty()
 {
 	_itemCount == 0;
+}
+
+template<class T>
+inline Queue<T> Queue<T>::copy()
+{
+	Queue queue;
+	queue._arr = new T[_arraySize];
+
+	queue._arraySize = _arraySize;
+	queue._itemCount = _itemCount;
+	queue._startIndex = _startIndex;
+
+	for (int i = 0; i < _arraySize; i++)
+	{
+		queue._arr[i] = _arr[i];
+	}
+	return queue;
 }
 
 template<class T>

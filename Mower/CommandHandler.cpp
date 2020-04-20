@@ -75,7 +75,9 @@ bool CommandHandler::runSequence()
 		check,
 	};
 	static state_s state = load;
-	static cmdSequense* sequence = nullptr;
+	//static cmdSequense* sequence = nullptr;
+	static Queue<EngineModule::cmd> sequence;
+	static void(*callback)(void) = commandQueue.front().callback;
 
 	switch (state)
 	{
@@ -85,7 +87,12 @@ bool CommandHandler::runSequence()
 			Serial.println("\tEmpty sequence");
 			return true;
 		}
-		sequence = &commandQueue.front();
+
+
+		//sequence = commandQueue.front();
+		sequence = commandQueue.front().sequense.copy();
+		callback = commandQueue.front().callback;
+
 
 		state = send;
 		break;
@@ -94,8 +101,10 @@ bool CommandHandler::runSequence()
 		if (!engine->isReady())
 			break;
 		Serial.print("\tSending cmd ");
-		Serial.println(sequence->sequense.count());
-		sendCmdToEngine(sequence->sequense.dequeue());
+		//Serial.println(sequence.sequense.count());
+		//sendCmdToEngine(sequence.sequense.dequeue());
+		Serial.println(sequence.count());
+		sendCmdToEngine(sequence.dequeue());
 		state = wait;
 
 		Serial.print("\tWaiting...");
@@ -106,7 +115,8 @@ bool CommandHandler::runSequence()
 		break;
 	case check://checks if end of sequens and returns true if it is.
 		Serial.println("Done.");
-		if (sequence->sequense.isEmpty())
+		//if (sequence.sequense.isEmpty())
+		if (sequence.isEmpty())
 		{
 			state = load;
 			return true;
@@ -131,10 +141,25 @@ void CommandHandler::addCommand(EngineModule::cmd command, void(*callback)(void)
 
 void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*callback)(void))
 {
+
 	cmdSequense sequense;
 	for (int i = 0; i < size; i++)
 	{
+		Serial.print("HANDLER: cmd in. \t");
+		Serial.print(command[i].speed);
+		Serial.print(", ");
+		Serial.print(command[i].time_ms);
+		Serial.print(", ");
+		Serial.println(command[i].turnRadius);
+
 		sequense.sequense.enqueue(command[i]);
+		
+		Serial.print("HANDLER: cmd saved. \t");
+		Serial.print(sequense.sequense.front().speed);
+		Serial.print(", ");
+		Serial.print(sequense.sequense.front().time_ms);
+		Serial.print(", ");
+		Serial.println(sequense.sequense.front().turnRadius);
 	}
 	sequense.callback = callback;
 	commandQueue.enqueue(sequense);
