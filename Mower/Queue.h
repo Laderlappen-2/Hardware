@@ -91,7 +91,7 @@ inline T Queue<T>::dequeue()
 template<class T>
 inline T Queue<T>::front()
 {
-	return _arr[(_startIndex + _itemCount - 1)%_arraySize];
+	return _arr[_startIndex];
 }
 
 template<class T>
@@ -101,7 +101,7 @@ inline int Queue<T>::count()
 template<class T>
 inline bool Queue<T>::isEmpty()
 {
-	_itemCount == 0;
+	return _itemCount == 0;
 }
 
 template<class T>

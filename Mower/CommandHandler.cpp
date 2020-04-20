@@ -16,14 +16,6 @@ CommandHandler::~CommandHandler()
 {	
 	delete engine;
 }
-/*
-CommandHandler * CommandHandler::getInstance()
-{
-	if (CommandHandler::instance == nullptr)
-		CommandHandler::instance = new CommandHandler();
-	return CommandHandler::instance;
-}*/
-
 
 void CommandHandler::run()
 {
@@ -75,10 +67,6 @@ bool CommandHandler::runSequence()
 		check,
 	};
 	static state_s state = load;
-	//static cmdSequense* sequence = nullptr;
-
-	//static Queue<EngineModule::cmd> sequence;
-	//static void(*callback)(void) = nullptr;
 
 #define SEQUENCE commandQueue.front()->sequense
 
@@ -91,25 +79,6 @@ bool CommandHandler::runSequence()
 			return true;
 		}
 
-		Serial.print("HANDLER: queue front. \t");
-		Serial.print(commandQueue.front()->sequense.front().speed);
-		Serial.print(", ");
-		Serial.print(commandQueue.front()->sequense.front().time_ms);
-		Serial.print(", ");
-		Serial.println(commandQueue.front()->sequense.front().turnRadius);
-		
-		//sequence = commandQueue.front();
-		
-		//sequence = commandQueue.front().sequense.copy();
-		//callback = commandQueue.front().callback;
-
-		//Serial.print("HANDLER: queue copy. \t");
-		//Serial.print(sequence.front().speed);
-		//Serial.print(", ");
-		//Serial.print(sequence.front().time_ms);
-		//Serial.print(", ");
-		//Serial.println(sequence.front().turnRadius);
-
 		state = send;
 		break;
 
@@ -117,8 +86,7 @@ bool CommandHandler::runSequence()
 		if (!engine->isReady())
 			break;
 		Serial.print("\tSending cmd ");
-		//Serial.println(sequence.sequense.count());
-		//sendCmdToEngine(sequence.sequense.dequeue());
+
 		Serial.println(SEQUENCE.count());
 		sendCmdToEngine(SEQUENCE.dequeue());
 		state = wait;
@@ -149,7 +117,6 @@ bool CommandHandler::runSequence()
 
 void CommandHandler::addCommand(EngineModule::cmd command, void(*callback)(void))
 {
-	//QueueArray<EngineModule::cmd> cmdQueue;
 	Queue<EngineModule::cmd> cmdQueue; 
 	cmdQueue.enqueue(command);
 	commandQueue.enqueue(new cmdSequense {cmdQueue, callback});
@@ -161,29 +128,11 @@ void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*call
 	cmdSequense* sequense = new cmdSequense;
 	for (int i = 0; i < size; i++)
 	{
-		Serial.print("HANDLER: cmd in. \t");
-		Serial.print(command[i].speed);
-		Serial.print(", ");
-		Serial.print(command[i].time_ms);
-		Serial.print(", ");
-		Serial.println(command[i].turnRadius);
-
-		sequense->sequense.enqueue(command[i]);
-		
-		Serial.print("HANDLER: cmd saved. \t");
-		Serial.print(sequense->sequense.front().speed);
-		Serial.print(", ");
-		Serial.print(sequense->sequense.front().time_ms);
-		Serial.print(", ");
-		Serial.println(sequense->sequense.front().turnRadius);
+		sequense->sequense.enqueue(command[i]);		
 	}
 	sequense->callback = callback;
 	commandQueue.enqueue(sequense);
 }
-
-//void CommandHandler::addCommand(cmdSequense commandSeq)
-//{	commandQueue.enqueue(commandSeq);}
-
 void CommandHandler::clear()
 {	
 	while (!commandQueue.isEmpty())
