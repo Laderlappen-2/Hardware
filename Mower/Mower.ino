@@ -19,13 +19,10 @@ void setTestSequence()
 {
 	Serial.println("Adding cmd Sequence");
 	//								speed,	turn,		ms
-	EngineModule::cmd sequence[] = {{100,	NO_TURN,	500},
-									{200,	7,			50},
-									{-150,	NO_TURN,	250},
-									{200,	-7,			50},
-									{-100,	30,			500}, };
+EngineModule::cmd sequence[] = {{255,    NO_TURN,    5000},
+                                    {200,    7,            1000},};
 
-	commandHandler->addCommand(sequence, 5, setTestSequence);
+	commandHandler->addCommand(sequence, 2, setTestSequence);
 }
 
 void loop()

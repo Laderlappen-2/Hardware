@@ -46,12 +46,13 @@ void CommandHandler::run()
 			state = callback;
 		break;
 	case callback:// calls the callback function (if there is any) and removes the sequense from the queue
-		if (commandQueue.front()->callback != nullptr)
-			commandQueue.front()->callback();
-		Serial.println("Sequence Done ");
-		Serial.print(commandQueue.count());
+		
+		Serial.print("Sequence Done ");
+		Serial.println(commandQueue.count());
 		delete commandQueue.dequeue();
 		state = idle;
+		if (commandQueue.front()->callback != nullptr)
+     commandQueue.front()->callback();
 		break;
 	default:
 		break;
