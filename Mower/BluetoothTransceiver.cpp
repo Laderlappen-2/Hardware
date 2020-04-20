@@ -7,12 +7,12 @@ BluetoothTransceiver::BluetoothTransceiver(int baudrate)
   bluetoothModule.begin(baudrate);
 }
 
-void BluetoothTransceiver::send(String message)
+void BluetoothTransceiver::sendData(String message)
 {
-  
+  bluetoothModule.print(message + "\r");
 }
 
-void BluetoothTransceiver::setListener(void(*callback)(String))
+void BluetoothTransceiver::rxListener(void(*callback)(String))
 {
   
 }

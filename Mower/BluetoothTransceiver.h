@@ -7,14 +7,14 @@ public:
   BluetoothTransceiver();
   BluetoothTransceiver(int baudrate);
 
-  void send(String message);
-  void setListener(void(*callback)(String));
+  void sendData(String message);
+  void rxListener(void(*callback)(String));
 
 private:
 
-  String dataReceived;
-  const int txPin;    //Must be initiated here
-  const int rxPin;    //Must be initiated here
-  SoftwareSerial bluetoothModule = SoftwareSerial(txPin, rxPin);
+  void(*_callback)(String);
+  const int _txPin;    //Must be initiated here
+  const int _rxPin;    //Must be initiated here
+  SoftwareSerial bluetoothModule = SoftwareSerial(_txPin, _rxPin);
   
 };
