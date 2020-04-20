@@ -1,32 +1,26 @@
 #include "CommandHandler.h"
-
 #include <MeEncoderOnBoard.h>
+#include <Arduino.h>
 
 CommandHandler::CommandHandler()
 {
-
 }
-void CommandHandler::init()
+void CommandHandler::init(int slot1,int slot2)
 {
+	engine = new EngineModule(slot1,slot2);
 }
-
-
 
 
 
 CommandHandler::~CommandHandler()
-{	delete instance;}
-
-
-CommandHandler * CommandHandler::getInstance()
-{
-	if (instance == nullptr)
-		instance = new CommandHandler();
-	return instance;
+{	
+	delete engine;
 }
 
 void CommandHandler::run()
 {
+	engine->run();
+	
 	enum state_e
 	{
 		idle,
@@ -40,17 +34,25 @@ void CommandHandler::run()
 	{
 	case idle://wait until there is a sequense to run
 		if (!commandQueue.isEmpty())
+		{
 			state = doSequence;
+			
+			Serial.print("Starting sequence ");
+			Serial.println(commandQueue.count());
+		}
 		break;
 	case doSequence:// runs the sequense and waits until it's done
 		if (runSequence())
 			state = callback;
 		break;
-	case callback:// calls thr callback function (if there is any) and removes the sequense from the queue
-		if (commandQueue.front().callback != nullptr)
-			commandQueue.front().callback();
-		commandQueue.pop();
+	case callback:// calls the callback function (if there is any) and removes the sequense from the queue
+		
+		Serial.print("Sequence Done ");
+		Serial.println(commandQueue.count());
+		delete commandQueue.dequeue();
 		state = idle;
+		if (commandQueue.front()->callback != nullptr)
+     commandQueue.front()->callback();
 		break;
 	default:
 		break;
@@ -65,28 +67,41 @@ bool CommandHandler::runSequence()
 		send,
 		check,
 	};
-	static state_s state = send;
-	static cmdSequense* sequence = nullptr;
+	static state_s state = load;
+
+#define SEQUENCE commandQueue.front()->sequense
 
 	switch (state)
 	{
 	case load:// loads the front sequense from the queue
 		if (commandQueue.isEmpty())
+		{
+			Serial.println("\tEmpty sequence");
 			return true;
-		sequence = &commandQueue.front();
+		}
+
+		state = send;
+		break;
+
+	case send:// sends the front cmd in the sequense to the engine and removes it from the queue
+		if (!engine->isReady())
+			break;
+		Serial.print("\tSending cmd ");
+
+		Serial.println(SEQUENCE.count());
+		sendCmdToEngine(SEQUENCE.dequeue());
 		state = wait;
+
+		Serial.print("\tWaiting...");
 		break;
 	case wait:// waits to run the sequense until the engine is ready
-		//TODO implement ready function in engine to check here
-		//if (ready()) state = send;
+		if (engine->isReady()) 
+			state = check;
 		break;
-	case send:// sends the front cmd in the sequense to the engine and removes it from the queue
-		sendCmdToEngine(sequence->sequense.front());
-		sequence->sequense.pop();
-		state = check;
-		break;
-	case check://checks if end of sequens and returns trur if it is.
-		if (sequence->sequense.isEmpty())
+	case check://checks if end of sequens and returns true if it is.
+		Serial.println("Done.");
+		//if (sequence.sequense.isEmpty())
+		if (SEQUENCE.isEmpty())
 		{
 			state = load;
 			return true;
@@ -101,42 +116,32 @@ bool CommandHandler::runSequence()
 }
 
 
-void CommandHandler::addCommand(cmd command, void(*callback)(void))
+void CommandHandler::addCommand(EngineModule::cmd command, void(*callback)(void))
 {
-	QueueArray<cmd> cmdQueue;
-	cmdQueue.push(command);
-	commandQueue.push(cmdSequense {cmdQueue, callback});
+	Queue<EngineModule::cmd> cmdQueue; 
+	cmdQueue.enqueue(command);
+	commandQueue.enqueue(new cmdSequense {cmdQueue, callback});
 }
 
-void CommandHandler::addCommand(cmd command[],int size, void(*callback)(void))
+void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*callback)(void))
 {
-	cmdSequense sequense;
+
+	cmdSequense* sequense = new cmdSequense;
 	for (int i = 0; i < size; i++)
 	{
-		sequense.sequense.push(command[i]);
+		sequense->sequense.enqueue(command[i]);		
 	}
-	sequense.callback = callback;
-	commandQueue.push(sequense);
+	sequense->callback = callback;
+	commandQueue.enqueue(sequense);
 }
-
-void CommandHandler::addCommand(cmdSequense commandSeq)
-{	commandQueue.push(commandSeq);}
-
 void CommandHandler::clear()
 {	
 	while (!commandQueue.isEmpty())
-		commandQueue.pop();
+		delete commandQueue.dequeue();
 }
 
 void CommandHandler::stopEngine()
-{
+{	engine->stopp();}
 
-	//TODO implement when engine is ready 
-}
-
-
-
-void CommandHandler::sendCmdToEngine(cmd)
-{
-	//TODO implement when engine is ready
-}
+void CommandHandler::sendCmdToEngine(EngineModule::cmd command)
+{	engine->setCommand(command);}
