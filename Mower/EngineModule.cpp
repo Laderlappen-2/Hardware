@@ -11,29 +11,15 @@ EngineModule::EngineModule(int slot1, int slot2)
   
 void EngineModule::setCommand(cmd command)
 {
-    Serial.print("\nsetCommand START!!!!!");
-    //delay(1);
-    /*if (current_command == nullptr)
-    {
-       Serial.print("\nIFF START!!!!!(engine)");
-       current_command = new cmd{0,0,0};
-       Serial.print("\nIFF END!!!!!(engine)");
-    }*/
-    
     current_command.speed = command.speed;
     current_command.turnRadius = command.turnRadius; 
     current_command.time_ms = command.time_ms; 
-    
-    //*current_command = command;
-    
+
     _ready = false;
-    Serial.print("setCommand END!!!!!");
 }
 
 bool EngineModule::isReady()
 {
-  //Serial.print((current_command == nullptr) ? "Ready" : "Note ready");
-  //return current_command == nullptr;
   return _ready;
 }
 
@@ -49,14 +35,13 @@ void EngineModule::run()
   Wheel_Right->loop();
   Wheel_Left->loop();
   static state_s state = idle;
-  static long startWait = 0;
+  static unsigned long startWait = 0;
   
   switch(state)
   {
     case idle:
     if (!isReady())
     {
-      //_ready = false;
       state = update;
     }
     else 
@@ -70,8 +55,6 @@ void EngineModule::run()
     case wait:
       if (millis() > startWait + current_command.time_ms)
       {
-        //delete(current_command);
-        //current_command = nullptr;
         _ready = true;
         state = idle;
         
