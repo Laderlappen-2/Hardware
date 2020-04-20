@@ -67,8 +67,6 @@ inline void Queue<T>::enqueue(T item)
 
 	_arr[_startIndex + _itemCount] = item;
 	_itemCount++;
-	if (_itemCount == _arraySize)
-		_itemCount = 0;
 }
 
 template<class T>

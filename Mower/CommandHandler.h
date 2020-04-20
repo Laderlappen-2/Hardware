@@ -35,7 +35,7 @@ public:
 	//adds an engine command at the back if the queue
 	void addCommand(EngineModule::cmd,void(*callback)(void) = nullptr);
 	void addCommand(EngineModule::cmd[],int, void(*callback)(void) = nullptr);
-	void addCommand(cmdSequense);
+	//void addCommand(cmdSequense);
 
 	//cleares the entire command queue but dose NOT stop the engine
 	void clear();
@@ -52,6 +52,6 @@ private:
 	//static CommandHandler* instance;
 	EngineModule* engine;
 	//QueueArray<cmdSequense> commandQueue;
-	Queue<cmdSequense> commandQueue;
+	Queue<cmdSequense*> commandQueue;
 
 };

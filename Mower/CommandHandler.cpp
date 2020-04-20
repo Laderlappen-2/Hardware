@@ -53,12 +53,12 @@ void CommandHandler::run()
 		if (runSequence())
 			state = callback;
 		break;
-	case callback:// calls thr callback function (if there is any) and removes the sequense from the queue
-		if (commandQueue.front().callback != nullptr)
-			commandQueue.front().callback();
+	case callback:// calls the callback function (if there is any) and removes the sequense from the queue
+		if (commandQueue.front()->callback != nullptr)
+			commandQueue.front()->callback();
 		Serial.println("Sequence Done ");
 		Serial.print(commandQueue.count());
-		commandQueue.dequeue();
+		delete commandQueue.dequeue();
 		state = idle;
 		break;
 	default:
@@ -76,8 +76,11 @@ bool CommandHandler::runSequence()
 	};
 	static state_s state = load;
 	//static cmdSequense* sequence = nullptr;
-	static Queue<EngineModule::cmd> sequence;
-	static void(*callback)(void) = commandQueue.front().callback;
+
+	//static Queue<EngineModule::cmd> sequence;
+	//static void(*callback)(void) = nullptr;
+
+#define SEQUENCE commandQueue.front()->sequense
 
 	switch (state)
 	{
@@ -88,11 +91,24 @@ bool CommandHandler::runSequence()
 			return true;
 		}
 
-
+		Serial.print("HANDLER: queue front. \t");
+		Serial.print(commandQueue.front()->sequense.front().speed);
+		Serial.print(", ");
+		Serial.print(commandQueue.front()->sequense.front().time_ms);
+		Serial.print(", ");
+		Serial.println(commandQueue.front()->sequense.front().turnRadius);
+		
 		//sequence = commandQueue.front();
-		sequence = commandQueue.front().sequense.copy();
-		callback = commandQueue.front().callback;
+		
+		//sequence = commandQueue.front().sequense.copy();
+		//callback = commandQueue.front().callback;
 
+		//Serial.print("HANDLER: queue copy. \t");
+		//Serial.print(sequence.front().speed);
+		//Serial.print(", ");
+		//Serial.print(sequence.front().time_ms);
+		//Serial.print(", ");
+		//Serial.println(sequence.front().turnRadius);
 
 		state = send;
 		break;
@@ -103,8 +119,8 @@ bool CommandHandler::runSequence()
 		Serial.print("\tSending cmd ");
 		//Serial.println(sequence.sequense.count());
 		//sendCmdToEngine(sequence.sequense.dequeue());
-		Serial.println(sequence.count());
-		sendCmdToEngine(sequence.dequeue());
+		Serial.println(SEQUENCE.count());
+		sendCmdToEngine(SEQUENCE.dequeue());
 		state = wait;
 
 		Serial.print("\tWaiting...");
@@ -116,7 +132,7 @@ bool CommandHandler::runSequence()
 	case check://checks if end of sequens and returns true if it is.
 		Serial.println("Done.");
 		//if (sequence.sequense.isEmpty())
-		if (sequence.isEmpty())
+		if (SEQUENCE.isEmpty())
 		{
 			state = load;
 			return true;
@@ -134,15 +150,15 @@ bool CommandHandler::runSequence()
 void CommandHandler::addCommand(EngineModule::cmd command, void(*callback)(void))
 {
 	//QueueArray<EngineModule::cmd> cmdQueue;
-	Queue<EngineModule::cmd> cmdQueue;
+	Queue<EngineModule::cmd> cmdQueue; 
 	cmdQueue.enqueue(command);
-	commandQueue.enqueue(cmdSequense {cmdQueue, callback});
+	commandQueue.enqueue(new cmdSequense {cmdQueue, callback});
 }
 
 void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*callback)(void))
 {
 
-	cmdSequense sequense;
+	cmdSequense* sequense = new cmdSequense;
 	for (int i = 0; i < size; i++)
 	{
 		Serial.print("HANDLER: cmd in. \t");
@@ -152,26 +168,26 @@ void CommandHandler::addCommand(EngineModule::cmd command[],int size, void(*call
 		Serial.print(", ");
 		Serial.println(command[i].turnRadius);
 
-		sequense.sequense.enqueue(command[i]);
+		sequense->sequense.enqueue(command[i]);
 		
 		Serial.print("HANDLER: cmd saved. \t");
-		Serial.print(sequense.sequense.front().speed);
+		Serial.print(sequense->sequense.front().speed);
 		Serial.print(", ");
-		Serial.print(sequense.sequense.front().time_ms);
+		Serial.print(sequense->sequense.front().time_ms);
 		Serial.print(", ");
-		Serial.println(sequense.sequense.front().turnRadius);
+		Serial.println(sequense->sequense.front().turnRadius);
 	}
-	sequense.callback = callback;
+	sequense->callback = callback;
 	commandQueue.enqueue(sequense);
 }
 
-void CommandHandler::addCommand(cmdSequense commandSeq)
-{	commandQueue.enqueue(commandSeq);}
+//void CommandHandler::addCommand(cmdSequense commandSeq)
+//{	commandQueue.enqueue(commandSeq);}
 
 void CommandHandler::clear()
 {	
 	while (!commandQueue.isEmpty())
-		commandQueue.dequeue();
+		delete commandQueue.dequeue();
 }
 
 void CommandHandler::stopEngine()
