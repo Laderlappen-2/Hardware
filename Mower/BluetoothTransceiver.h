@@ -1,4 +1,5 @@
 #include <SoftwareSerial.h>
+#include <Arduino.h>
 
 class BluetoothTransceiver
 {
@@ -9,12 +10,13 @@ public:
 
   void sendData(String message);
   void rxListener(void(*callback)(String));
+  void run();
 
 private:
 
   void(*_callback)(String);
-  const int _txPin;    //Must be initiated here
-  const int _rxPin;    //Must be initiated here
-  SoftwareSerial bluetoothModule = SoftwareSerial(_txPin, _rxPin);
+  const int _txPin = 3;
+  const int _rxPin = 2;
+  SoftwareSerial _bluetoothModule = SoftwareSerial(_rxPin, _txPin);
   
 };
