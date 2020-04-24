@@ -4,6 +4,7 @@
 
 BluetoothController::BluetoothController()
 {
+	btTranciver.setListener(this->reciveListnerBT);
 }
 
 
@@ -13,9 +14,21 @@ BluetoothController::~BluetoothController()
 
 void BluetoothController::run()
 {
+	btTranciver.run();
+	runTX();
+	runRX();
+}
+void BluetoothController::runTX()
+{
+	if (sendBuffer.isEmpty())
+		return;
+	btTranciver.sendDataExpectAck(sendBuffer.dequeue());
+}
+
+void BluetoothController::runRX()
+{
 	if (rxBuffer.isEmpty())
 		return;
-
 	sendToListner(unpackMessage(rxBuffer.dequeue()));
 }
 
@@ -56,10 +69,12 @@ void BluetoothController::sendToListner(rxPackage package)
 	}
 }
 
-void BluetoothController::reciveListnerBT(String message)
-{
-	rxBuffer.enqueue(message);
-}
+
+
+//void BluetoothController::reciveListnerBT(String message)
+//{
+//	getInstance()->rxBuffer.enqueue(message);
+//}
 
 BluetoothController::rxPackage BluetoothController::unpackMessage(String message)
 {

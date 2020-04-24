@@ -3,7 +3,7 @@
 #include "Queue.h"
 #include <ArduinoSTL.h>
 #include <stdlib.h>
-
+#include "BluetoothTransceiver.h"
 
 using namespace std;
 class BluetoothController
@@ -28,8 +28,13 @@ public:
 		ligh = 'L',
 		honk = 'H',
 	};
-
-	BluetoothController();
+	static BluetoothController* getInstance()
+	{
+		static BluetoothController* instance = nullptr;
+		if (instance == nullptr)
+			instance = new BluetoothController();
+		return instance;
+	}
 	~BluetoothController();
 
 	//the main state machine 
@@ -41,6 +46,7 @@ public:
 	void addReciveListner(reciveType_e,void(*callback)(int[],int));
 
 private:
+	BluetoothController();
 
 	//message format charachters
 	const char ioStart = '@';
@@ -64,12 +70,18 @@ private:
 	vector<rxListner_s> listners;
 
 	//function to be called when 
-	void reciveListnerBT(String);
+	static void reciveListnerBT(String message)
+	{
+		getInstance()->rxBuffer.enqueue(message);
+	}
 	rxPackage unpackMessage(String);
 	void sendToListner(rxPackage);
 
+	void runTX();
+	void runRX();
+
 	Queue<String> rxBuffer;
 
-
+	BluetoothTransceiver btTranciver;
 };
 
