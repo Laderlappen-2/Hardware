@@ -82,6 +82,5 @@ private:
 
 	Queue<String> rxBuffer;
 
-	BluetoothTransceiver btTranciver;
+	BluetoothTransceiver btTranciver = BluetoothTransceiver(9600);
 };
-

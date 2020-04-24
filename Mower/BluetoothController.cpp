@@ -129,4 +129,3 @@ BluetoothController::rxPackage BluetoothController::unpackMessage(String message
 
 	return package;
 }
-
