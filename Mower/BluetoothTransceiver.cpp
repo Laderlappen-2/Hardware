@@ -7,17 +7,20 @@ BluetoothTransceiver::BluetoothTransceiver(int baudrate)
   _bluetoothModule.begin(baudrate);
 }
 
-void BluetoothTransceiver::sendData(String message)
+void BluetoothTransceiver::sendDataExpectAck(String message)
 {
-  if(_callback != nullptr)
-  {
-    _callback(message);
-  }
-
-  //_bluetoothModule.print(message + "\r");   Code for sending data to the app.
+  _currentMessage = message;
+  _bluetoothModule.print(message + "\r");   //Code for sending data to the app.
+  _acknowledgeTimeout = millis() + 2000;
+  _acknowledgeReceived = false;
 }
 
-void BluetoothTransceiver::rxListener(void(*callback)(String))
+void BluetoothTransceiver::sendAcknowledge()
+{
+  _bluetoothModule.print("@A$\r");   //Code for sending data to the app.
+}
+
+void BluetoothTransceiver::setListener(void(*callback)(String))
 {
   _callback = callback;
 }
@@ -27,7 +30,8 @@ void BluetoothTransceiver::run()
   enum state_e
   {
     idle,
-    receive
+    receive,
+    resend
   };
   static state_e state = idle;
 
@@ -38,6 +42,12 @@ void BluetoothTransceiver::run()
       if(_bluetoothModule.available())  //Checks if there is any data available.
       {
         state = receive;
+        break;
+      }
+
+      else if(!_acknowledgeReceived && millis() > _acknowledgeTimeout)
+      {
+        state = resend;
         break;
       }
       
@@ -51,14 +61,31 @@ void BluetoothTransceiver::run()
       {
         char currentChar = _bluetoothModule.read();
         message += currentChar;
+
+        if(message == "@A$")   //Acknowledge message format.
+        {
+          _acknowledgeReceived = true;
+          state = idle;
+          return;
+        }
         
-        if(currentChar == '$')
+        if(message.startsWith('@') && message.endsWith('$'))
           break;
       }
+
+      if(message.charAt(message.length() - 2) == '1')   //Read acknowledge flag.
+        sendAcknowledge();
       
-      if(_callback != nullptr && message.startsWith("@"))   //Maybe check the @ sign somewhere else to make sure that the message is in correct format?
+      if(_callback != nullptr)
         _callback(message);   //Send message to BluetoothController. Callback function in BluetoothController?
         
+      state = idle;
+      break;
+    }
+
+    case resend:  //Only enter if we have not received acknowledge. (Resending data).
+    {
+      sendDataExpectAck(_currentMessage);
       state = idle;
       break;
     }

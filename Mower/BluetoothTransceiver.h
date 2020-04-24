@@ -8,8 +8,9 @@ public:
   BluetoothTransceiver();
   BluetoothTransceiver(int baudrate);
 
-  void sendData(String message);
-  void rxListener(void(*callback)(String));
+  void sendDataExpectAck(String message);
+  void sendAcknowledge();
+  void setListener(void(*callback)(String));
   void run();
 
 private:
@@ -18,5 +19,8 @@ private:
   const int _txPin = 3;
   const int _rxPin = 2;
   SoftwareSerial _bluetoothModule = SoftwareSerial(_rxPin, _txPin);
+  String _currentMessage;
+  bool _acknowledgeReceived = true;
+  unsigned long _acknowledgeTimeout = 0;
   
 };
