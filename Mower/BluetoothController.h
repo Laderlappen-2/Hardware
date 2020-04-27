@@ -28,6 +28,7 @@ public:
 		ligh = 'L',
 		honk = 'H',
 	};
+	//get singelton instance
 	static BluetoothController* getInstance()
 	{
 		static BluetoothController* instance = nullptr;
@@ -42,7 +43,7 @@ public:
 
 	//send an event to the app togehter with XY coordinates
 	void send(EventType_e,int,int);
-	//adds a listner that listen for a specific rx type and will be called whe it is recived
+	//adds a listner that listen for a specific rx type and will be called when it is recived
 	void addReciveListner(reciveType_e,void(*callback)(int[],int));
 
 private:
@@ -66,21 +67,25 @@ private:
 	};
 
 	//buffer containing messages to be sent, in order
-	Queue<String> sendBuffer;
+	Queue<string> sendBuffer;
 	vector<rxListner_s> listners;
 
 	//function to be called when 
-	static void reciveListnerBT(String message)
+	static void reciveListnerBT(string message)
 	{
 		getInstance()->rxBuffer.enqueue(message);
 	}
-	rxPackage unpackMessage(String);
+	//unpacks an message into a readalbe package 
+	rxPackage unpackMessage(string);
+	//send package to listners
 	void sendToListner(rxPackage);
 
+	//runs the BT tranmit logic
 	void runTX();
+	//runs BT recive logic
 	void runRX();
 
-	Queue<String> rxBuffer;
-
-	BluetoothTransceiver btTranciver = BluetoothTransceiver(9600);
+	Queue<string> rxBuffer;
+	BluetoothTransceiver btTranciver;
 };
+
