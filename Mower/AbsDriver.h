@@ -1,19 +1,19 @@
-#include "Adrduino.h"
+#include <Arduino.h>
 #include <stdlib.h>
 
 class AbsDriver
 {
 public:
 
-	AbsDriver() = 0;
+	virtual void init() = 0;
 	
-	void run();
+	virtual	void run();
 
 protected:
 	
-	void sendCMD();
+	virtual	void sendCMD();
 
-	void listener(String);
+	virtual	void listener(String);
 
 private:
 

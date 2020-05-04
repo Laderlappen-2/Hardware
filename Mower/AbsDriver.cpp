@@ -1,9 +1,13 @@
 #include "AbsDriver.h"
 
-AbsDriver::AbsDriver(){}
+void AbsDriver::run()
+{
+}
 
-AbsDriver::sendCMD(){}
+void AbsDriver::sendCMD()
+{
+}
 
-AbsDriver::run(){}
-
-AbsDriver::listener(String){}
+void AbsDriver::listener(String)
+{
+}
