@@ -7,16 +7,17 @@
 class AbsDriver
 {
 public:
-	
+
 	AbsDriver();
 
-	virtual void init() = 0;
-	
+	virtual void init();
+
 	virtual	void run();
 	virtual	void sendCMD();
-	virtual	void listener(int[],int);
+	virtual	void listener(int[], int);
 
 protected:
-	#define safetyDistance = 10;
+#define safetyDistance  10
 
 	SensorController* sensorInstance;
+};

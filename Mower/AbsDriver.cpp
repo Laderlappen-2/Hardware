@@ -5,6 +5,10 @@ AbsDriver::AbsDriver()
 	sensorInstance = SensorController::getInstance();
 }
 
+void AbsDriver::init()
+{
+}
+
 void AbsDriver::run()
 {
 }

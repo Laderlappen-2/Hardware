@@ -2,7 +2,7 @@
 
  
 
-MultiDriver::MultiDriver()
+MultiDriver::MultiDriver() 
 {
 }
 
@@ -24,6 +24,7 @@ MultiDriver::~MultiDriver()
 void MultiDriver::init()
 {
 	//TODO link bt listner
+	AbsDriver::init();
 }
 
 void MultiDriver::addDriver(AbsDriver * driver, String name)
