@@ -68,32 +68,43 @@ void EngineModule::run()
 
 void EngineModule::execute_command(cmd *command)
 {
-  command->speed = constrain(command->speed, -255, 255);
+    //---New code that handles a range (-100 <-> 100)
+    command->speed = constrain(command->speed, -100, 100);
+    command->speed = command->speed * 2.55;
+    //--- End
+    command->speed = constrain(command->speed, -255, 255);
 
-  if (command->turnRadius == NO_TURN)
-  {
+    if(command->turnRadius == 0)
+    {
+        Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
+        Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
+        return;
+    }
+
+    /*if (command->turnRadius == NO_TURN)
+    {
     Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
     Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
     return;
-  }
+    }*/
   
-  float rRight, rLeft;
-  rRight = command->turnRadius - (_wheelToWheelGap / 2);
-  rLeft = command->turnRadius + (_wheelToWheelGap / 2);
+    float rRight, rLeft;
+    rRight = command->turnRadius - (_wheelToWheelGap / 2);
+    rLeft = command->turnRadius + (_wheelToWheelGap / 2);
 
-  if(command->turnRadius > 0)
-  {
+    if(command->turnRadius > 0)
+    {
     float ratio = rRight / rLeft;
     Wheel_Right->setMotorPwm(-command->speed * ratio - _rightWheelOffset);
     Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
-  }
+    }
 
-  else
-  {
+    else
+    {
     float ratio = rLeft / rRight;
     Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
     Wheel_Left->setMotorPwm(command->speed * ratio + _leftWheelOffset);
-  }
+    }
 
   
 }
