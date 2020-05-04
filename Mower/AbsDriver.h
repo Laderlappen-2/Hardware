@@ -13,7 +13,7 @@ protected:
 	
 	virtual	void sendCMD();
 
-	virtual	void listener(String);
+	virtual	void listener(int[],int);
 
 private:
 

@@ -8,6 +8,6 @@ void AbsDriver::sendCMD()
 {
 }
 
-void AbsDriver::listener(String)
+void AbsDriver::listener(int data[], int size)
 {
 }
