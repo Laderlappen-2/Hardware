@@ -6,12 +6,15 @@ class AbsDriver
 public:
 
 	AbsDriver() = 0;
-
-	void sendCMD();
-
+	
 	void run();
 
+protected:
+	
+	void sendCMD();
+
 	void listener(String);
+
 private:
 
 };
