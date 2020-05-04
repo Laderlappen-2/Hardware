@@ -13,7 +13,7 @@ void EngineModule::setCommand(cmd command)
 {
     current_command.speed = command.speed;
     current_command.turnRadius = command.turnRadius; 
-    current_command.time_ms = command.time_ms; 
+    current_command.time_ms = command.time_ms; //TODO if time = negative, drive forever and set _ready to true
 
     _ready = false;
 }
@@ -53,12 +53,14 @@ void EngineModule::run()
       state = wait;
       break;
     case wait:
-      if (millis() > startWait + current_command.time_ms)
-      {
+        if (current_command.time_ms < 0)
+            _ready = true;
+        else if (millis() > startWait + current_command.time_ms)
+        {
         _ready = true;
         state = idle;
         
-      }
+        }
       break;
     default:
                         // TODO felhantering
@@ -70,9 +72,14 @@ void EngineModule::execute_command(cmd *command)
 {
     //---New code that handles a range (-100 <-> 100)
     command->speed = constrain(command->speed, -100, 100);
-    command->speed = command->speed * 2.55;
+    
+    int speed = fmax(command->speed, command->turnRadius);
+    command->speed = speed;
+    
+    command->speed = command->speed * 2.55; // set range to -255 <-> 255 
+
     //--- End
-    command->speed = constrain(command->speed, -255, 255);
+    command->speed = constrain(command->speed, -255, 255); // make sure we don't anger the motors
 
     if(command->turnRadius == 0)
     {
@@ -87,7 +94,9 @@ void EngineModule::execute_command(cmd *command)
     Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
     return;
     }*/
-  
+
+    command->turnRadius = command->turnRadius * 2.55;
+    //should convert the new values to the old ones
     float rRight, rLeft;
     rRight = command->turnRadius - (_wheelToWheelGap / 2);
     rLeft = command->turnRadius + (_wheelToWheelGap / 2);
