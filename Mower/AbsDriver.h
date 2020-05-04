@@ -1,10 +1,15 @@
 #include <Arduino.h>
 #include <stdlib.h>
+#include "CommandHandler.h"
+#include "SensorController.h"
+
 
 class AbsDriver
 {
 public:
-	 
+	
+	AbsDriver();
+
 	virtual void init() = 0;
 	
 	virtual	void run();
@@ -12,8 +17,6 @@ public:
 	virtual	void listener(int[],int);
 
 protected:
-	
+	#define safetyDistance = 10;
 
-private:
-
-};
+	SensorController* sensorInstance;
