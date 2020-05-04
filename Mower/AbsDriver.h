@@ -4,16 +4,15 @@
 class AbsDriver
 {
 public:
-
+	 
 	virtual void init() = 0;
 	
 	virtual	void run();
+	virtual	void sendCMD();
+	virtual	void listener(int[],int);
 
 protected:
 	
-	virtual	void sendCMD();
-
-	virtual	void listener(int[],int);
 
 private:
 
