@@ -1,15 +1,16 @@
 #include "MeUltraSonicSensor.h"
 class SensorController
 {
-  public:
+public:
 
-  SensorController();
+    static SensorController* getInstance();
 
-  double getUltrasonicValue();
+    double getUltrasonicValue();
 
+    ~SensorController();
+private:
 
-  private:
+    SensorController();
 
-
-  MeUltrasonicSensor ultraSensor = MeUltrasonicSensor(PORT_10);
+    MeUltrasonicSensor ultraSensor = MeUltrasonicSensor(PORT_10);
 };
