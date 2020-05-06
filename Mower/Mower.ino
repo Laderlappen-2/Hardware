@@ -28,7 +28,7 @@ void setTestSequence()
 }
 
 void loop()
-{   
+{  
 	//commandHandler->run();
 	//Serial.print("Distance : ");
   //Serial.print(controller.getUltrasonicValue());  
