@@ -1,14 +1,19 @@
 #pragma once
+#include "AbsDriver.h"
+#include <time.h>
 
-class AutoDriver
+class AutoDriver : public AbsDriver
 {
-
 public:
 
   AutoDriver();
-  void run();
 
+  void init();
+  void run();
+  void listener(int[], int);
+  void onActivation();
+  void onDeattivation();
 private:
 
-
+    
 };
