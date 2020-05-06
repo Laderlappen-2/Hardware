@@ -16,7 +16,12 @@ public:
 	virtual	void sendCMD();
 	virtual	void listener(int[], int);
 
+
+	virtual void onActuvation();
+	virtual void onDeactiovation();
 protected:
+
+
 	static const int safetyDistance = 10;
 
 	SensorController* sensorInstance;

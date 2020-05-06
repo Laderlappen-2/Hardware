@@ -20,3 +20,11 @@ void AbsDriver::sendCMD()
 void AbsDriver::listener(int data[], int size)
 {
 }
+
+void AbsDriver::onActuvation()
+{
+}
+
+void AbsDriver::onDeactiovation()
+{
+}

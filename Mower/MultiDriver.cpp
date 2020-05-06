@@ -40,7 +40,10 @@ void MultiDriver::selectDriver(String name)
 	{
 		if (list->getItem().nickname == name)
 		{
+			selectedDriver->onDeactiovation();
 			selectedDriver = list->getItem().driver;
+			selectedDriver->onActuvation();
+
 			break;
 		}
 		list = list->getNext();
@@ -59,6 +62,10 @@ void MultiDriver::selectDriver(String name)
 void MultiDriver::run()
 {
 	selectedDriver->run();
+}
+
+void MultiDriver::onActuvation()
+{
 }
 
 void MultiDriver::sendCMD()
