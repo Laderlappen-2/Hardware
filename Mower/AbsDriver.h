@@ -17,7 +17,7 @@ public:
 	virtual	void listener(int[], int);
 
 
-	virtual void onActuvation();
+	virtual void onActivation();
 	virtual void onDeactiovation();
 protected:
 

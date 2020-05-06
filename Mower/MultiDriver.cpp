@@ -42,7 +42,7 @@ void MultiDriver::selectDriver(String name)
 		{
 			selectedDriver->onDeactiovation();
 			selectedDriver = list->getItem().driver;
-			selectedDriver->onActuvation();
+			selectedDriver->onActivation();
 
 			break;
 		}
