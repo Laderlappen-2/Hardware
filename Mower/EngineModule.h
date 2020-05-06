@@ -23,6 +23,10 @@ public:
 
     void setCommand(cmd);
 
+    void setTurn(int);
+
+    void setSpeed(int);
+
     bool isReady();
 
     void stopp();

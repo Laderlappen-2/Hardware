@@ -26,6 +26,10 @@ private:
 	{
 		AbsDriver * driver;
 		String nickname;
+		inline bool operator==(const driver_s& d) const
+		{
+			return driver == d.driver && nickname == d.nickname;
+		}
 	};
 
 	AbsDriver * selectedDriver;

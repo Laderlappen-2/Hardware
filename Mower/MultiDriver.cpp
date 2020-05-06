@@ -9,7 +9,7 @@ MultiDriver::MultiDriver()
 MultiDriver::~MultiDriver()
 {
 	driverList* list = &drivers;
-	while (!list->isEndOfList())
+	while (list != nullptr)
 	{
 		delete list->getItem().driver;
 		list = list->getNext();
@@ -36,7 +36,7 @@ void MultiDriver::addDriver(AbsDriver * driver, String name)
 void MultiDriver::selectDriver(String name)
 {
 	driverList* list = &drivers;
-	while (!list->isEndOfList())
+	while (list!= nullptr)
 	{
 		if (list->getItem().nickname == name)
 		{

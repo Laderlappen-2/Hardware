@@ -52,9 +52,12 @@ inline LinkedList<T>* LinkedList<T>::getNext()
 template<class T>
 inline void LinkedList<T>::add(T item)
 {
-	if (isEndOfList())
+	if (_item == T())
+		_item = item;
+
+	else if (isEndOfList())
 		_next = new LinkedList<T>(item);
-	_next->add(item);
+	else _next->add(item);
 }
 
 template<class T>
@@ -62,7 +65,7 @@ inline void LinkedList<T>::add(LinkedList<T> list)
 {
 	if (isEndOfList())
 		_next = list;
-	_next->add(list);
+	else _next->add(list);
 }
 
 template<class T>
@@ -79,4 +82,4 @@ inline void LinkedList<T>::empty()
 
 	_next->empty();
 	delete _next;
-} 
+}
