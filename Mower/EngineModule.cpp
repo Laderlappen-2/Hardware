@@ -18,6 +18,16 @@ void EngineModule::setCommand(cmd command)
     _ready = false;
 }
 
+void EngineModule::setTurn(int turn)
+{
+
+}
+
+void EngineModule::setSpeed(int speed)
+{
+
+}
+
 bool EngineModule::isReady()
 {
   return _ready;
@@ -71,31 +81,31 @@ void EngineModule::run()
 void EngineModule::execute_command(cmd *command)
 {
     //---New code that handles a range (-100 <-> 100)
-    command->speed = constrain(command->speed, -100, 100);
+    //->speed = constrain(command->speed, -100, 100);
     
-    int speed = fmax(command->speed, command->turnRadius);
-    command->speed = speed;
+    //int speed = fmax(command->speed, command->turnRadius);
+    //command->speed = speed;
     
-    command->speed = command->speed * 2.55; // set range to -255 <-> 255 
+    //command->speed = command->speed * 2.55; // set range to -255 <-> 255 
 
     //--- End
     command->speed = constrain(command->speed, -255, 255); // make sure we don't anger the motors
 
-    if(command->turnRadius == 0)
+    /*if(command->turnRadius == 0)
     {
         Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
         Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
         return;
-    }
+    }*/
 
-    /*if (command->turnRadius == NO_TURN)
+    if (command->turnRadius == NO_TURN)
     {
     Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
     Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
     return;
-    }*/
+    }
 
-    command->turnRadius = command->turnRadius * 2.55;
+    //command->turnRadius = command->turnRadius * 2.55;
     //should convert the new values to the old ones
     float rRight, rLeft;
     rRight = command->turnRadius - (_wheelToWheelGap / 2);
