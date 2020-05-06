@@ -1,5 +1,6 @@
 #pragma once 
 #include <MeEncoderOnBoard.h>
+#include <math.h>
 
 class EngineModule{
 
@@ -7,38 +8,38 @@ public:
 
 #define NO_TURN 3001
 
-struct cmd
+    struct cmd
     {
         int speed;
         int turnRadius;
         int time_ms;
     };
 
-EngineModule();
+    EngineModule();
 
-EngineModule(int, int);
+    EngineModule(int, int);
 
-void run();
+    void run();
 
-void setCommand(cmd);
+    void setCommand(cmd);
 
-bool isReady();
+    bool isReady();
 
-void stopp();
+    void stopp();
 
 private:
 
-MeEncoderOnBoard *Wheel_Right;
-MeEncoderOnBoard *Wheel_Left;
+    MeEncoderOnBoard *Wheel_Right;
+    MeEncoderOnBoard *Wheel_Left;
 
-void execute_command(cmd*);
+    void execute_command(cmd*);
 
-bool _ready = true;
+    bool _ready = true;
 
-cmd current_command;
+    cmd current_command;
 
-const float _wheelToWheelGap = 14.6;
+    const float _wheelToWheelGap = 14.6;
 
-const int _rightWheelOffset = 17;
-const int _leftWheelOffset = 0;
+    const int _rightWheelOffset = 17;
+    const int _leftWheelOffset = 0;
 };

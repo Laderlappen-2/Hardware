@@ -3,6 +3,8 @@
 
 SensorController::SensorController(){}
 
+SensorController::~SensorController(){}
+
 
 double SensorController::getUltrasonicValue()
 {

@@ -1,15 +1,22 @@
+#pragma once
 #include "MeUltraSonicSensor.h"
 class SensorController
 {
-  public:
+public:
+    ~SensorController();
 
-  SensorController();
+    static SensorController* getInstance()
+	{
+		static SensorController* instance = nullptr;
+		if (instance == nullptr)
+			instance = new SensorController();
+		return instance;
+	}
 
-  double getUltrasonicValue();
+    double getUltrasonicValue();
 
+private:
 
-  private:
-
-
-  MeUltrasonicSensor ultraSensor = MeUltrasonicSensor(PORT_10);
+    SensorController();
+    MeUltrasonicSensor ultraSensor = MeUltrasonicSensor(PORT_10);
 };
