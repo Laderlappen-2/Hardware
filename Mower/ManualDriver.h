@@ -1,6 +1,7 @@
 #pragma once
 //#include "EngineModule.h
 #include "CommandHandler.h"
+#include "AbsDriver.h"
 
 class ManualDriver : public AbsDriver
 {
@@ -20,5 +21,5 @@ private:
 
 	bool sensorOn = false;
 
-	//SensorController* sensorInstance;
+	SensorController* sensorInstance;
 };

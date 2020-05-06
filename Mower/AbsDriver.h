@@ -17,7 +17,7 @@ public:
 	virtual	void listener(int[], int);
 
 protected:
-#define safetyDistance  10
+	static const int safetyDistance = 10;
 
 	SensorController* sensorInstance;
 };
