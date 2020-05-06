@@ -12,7 +12,8 @@ ManualDriver::sendCMD(int speed, int turn)
 {
 	//if (turn == 0)
 		//turn = 3001;
-	EngineModule::setCommand(EngineModule::cmd(speed, turn, 3)) //TODO change 3ms time
+	//EngineModule::setCommand(EngineModule::cmd(speed, turn, 3)); 
+	CommandHandler::addCommand(EngineModule::cmd(speed, turn, 3)); //TODO change 3ms time
 }
 ManualDriver::run() 
 {
