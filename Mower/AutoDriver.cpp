@@ -1,21 +1,24 @@
 #include "AutoDriver.h"
 
-AutoDriver::AutoDriver(){}
+AutoDriver::AutoDriver()
+{
+    commandInstance = CommandHandler::getInstance();
+}
 
 void init()
 {
 
 }
 
-void onDeactivation()
+void AutoDriver::onDeactiovation()
 {
 
 }
 
-void onActivation()
+void AutoDriver::onActivation()
 {
-    CommandHandler::stopEngine();
-    CommandHandler::clear();
+    commandInstance->stopEngine();
+    commandInstance->clear();
 }
 
 void AutoDriver::run()
@@ -31,14 +34,14 @@ void AutoDriver::run()
     switch (state)
     {
     case idle:
-        if (sensorInstance->getUltrasonicValue < safetyDistance)
+        if (sensorInstance->getUltrasonicValue() < safetyDistance)
             state = avoidCollision;
         break;
     case avoidCollision:
-        CommandHandler::stopEngine();
-        CommandHandler::clear();          // Should be here ?
-        CommandHandler::addCommand(EngineModule::cmd(-50, 0, 250));
-        CommandHandler::addCommand(EngineModule::cmd(0, 25, 100));
+        commandInstance->stopEngine();
+        commandInstance->clear();          // Should be here ?
+        commandInstance->addCommand(-50, 0, 250);
+        commandInstance->addCommand(0, 25, 100);
 
         // TODO rapportera till BT
         clock_t start = clock();
@@ -52,8 +55,8 @@ void AutoDriver::run()
         state = drive;
         break;
     case drive:
-            CommandHandler::addCommand(EngineModule::cmd(75, 0, -1));
-            state = idle;
+        commandInstance->addCommand(75, 0, -1);
+        state = idle;
         break;
     default:
         break;
@@ -64,5 +67,3 @@ void listener(int[], int)
 {
 
 }
-
-

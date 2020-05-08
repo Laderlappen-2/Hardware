@@ -12,8 +12,8 @@ public:
   void run();
   void listener(int[], int);
   void onActivation();
-  void onDeattivation();
+  void onDeactiovation();
 private:
 
-    
+    CommandHandler* commandInstance;
 };

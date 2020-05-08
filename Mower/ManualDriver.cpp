@@ -3,6 +3,7 @@
 ManualDriver::ManualDriver()
 {
 	sensorInstance = SensorController::getInstance();
+	commandInstance = CommandHandler::getInstance();
 }
 void ManualDriver::init()
 {
@@ -16,6 +17,14 @@ void ManualDriver::sendCMD(int speed, int turn)
 }
 void ManualDriver::run() 
 {
+	enum state_s
+	{
+		normal,
+		event,
+		fix,
+	};
+	static state_s state = normal;
+
 	switch (state)
 	{
 	case normal:
@@ -33,27 +42,17 @@ void ManualDriver::run()
 				@1,X,Y,start$
 
 		*/
+		commandInstance->stopEngine();
+		commandInstance->addCommand(-50, 0, -1);
 		state = fix;
 		break;
 	case fix:
-		CommandHandler::stopEngine();
-		CommandHandler::addCommand(EngineModule::cmd(-50, 0, -1));
 		if (sensorInstance->getUltrasonicValue() >= safetyDistance)
-		{
 			state = normal;
-		}
 		break;
 	default:
 		break;
 	}
-
-
-	//if (sensorOn == true && sensorInstance->getUltrasonicValue() >= safetyDistance)
-	//{
-	//	//TODO report back to BluetoothController 
-	//	
-	//	//CommandHandler::stopEngine(); //TODO make sure that mower does not get infinit stuck inside safetyDistance:)
-	//}
 
 }
 void ManualDriver::listener(int data[], int size) //0 speed - 1 turn

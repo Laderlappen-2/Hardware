@@ -2,6 +2,7 @@
 //#include "EngineModule.h
 #include "CommandHandler.h"
 #include "AbsDriver.h"
+#include <time.h>
 
 class ManualDriver : public AbsDriver
 {
@@ -22,11 +23,7 @@ private:
 	bool sensorOn = false;
 
 	SensorController* sensorInstance;
+	CommandHandler* commandInstance;
 
-	enum State_e
-	{
-		normal,
-		event,
-		fix,
-	};
+
 };
