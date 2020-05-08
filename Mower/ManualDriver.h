@@ -22,4 +22,11 @@ private:
 	bool sensorOn = false;
 
 	SensorController* sensorInstance;
+
+	enum State_e
+	{
+		normal,
+		event,
+		fix,
+	};
 };

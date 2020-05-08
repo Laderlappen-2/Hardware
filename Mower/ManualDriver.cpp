@@ -16,13 +16,44 @@ void ManualDriver::sendCMD(int speed, int turn)
 }
 void ManualDriver::run() 
 {
-	if (sensorOn == true && sensorInstance->getUltrasonicValue() >= safetyDistance)
+	switch (state)
 	{
-		//TODO report back to BluetoothController 
-		
-		//CommandHandler::stopEngine(); //TODO make sure that mower does not get infinit stuck inside safetyDistance:)
+	case normal:
+		if (sensorOn == true && sensorInstance->getUltrasonicValue() <= safetyDistance)
+		{
+			state = event;
+		}
+		break;
+	case event:
+		// TODO rapportera till BT
+		clock_t start = clock();
+		/*
+			Send a message followed by 'start', which is time elapsed since program start
+			Example @event,X,Y,klocka$ :
+				@1,X,Y,start$
+
+		*/
+		state = fix;
+		break;
+	case fix:
+		CommandHandler::stopEngine();
+		CommandHandler::addCommand(EngineModule::cmd(-50, 0, -1));
+		if (sensorInstance->getUltrasonicValue() >= safetyDistance)
+		{
+			state = normal;
+		}
+		break;
+	default:
+		break;
 	}
-		
+
+
+	//if (sensorOn == true && sensorInstance->getUltrasonicValue() >= safetyDistance)
+	//{
+	//	//TODO report back to BluetoothController 
+	//	
+	//	//CommandHandler::stopEngine(); //TODO make sure that mower does not get infinit stuck inside safetyDistance:)
+	//}
 
 }
 void ManualDriver::listener(int data[], int size) //0 speed - 1 turn
