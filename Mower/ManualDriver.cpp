@@ -35,7 +35,7 @@ void ManualDriver::run()
 		break;
 	case event:
 		// TODO rapportera till BT
-		clock_t start = clock();
+		//clock_t start = clock();
 		/*
 			Send a message followed by 'start', which is time elapsed since program start
 			Example @event,X,Y,klocka$ :
@@ -43,7 +43,8 @@ void ManualDriver::run()
 
 		*/
 		commandInstance->stopEngine();
-		commandInstance->addCommand(-50, 0, -1);
+		//TODO fix syntax
+		//commandInstance->addCommand(-50, 0, -1);
 		state = fix;
 		break;
 	case fix:
