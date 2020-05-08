@@ -4,12 +4,14 @@
 
 
 CommandHandler *commandHandler;
-SensorController controller;
+//SensorController controller;
 
 void setup()
 {
 	  Serial.begin(9600);
 
+	  commandHandler = CommandHandler::getInstance();
+	  commandHandler->init(SLOT1, SLOT2);
 	  //commandHandler = CommandHandler::getInstance();
 	  //commandHandler = new CommandHandler();
 	  //commandHandler->init(SLOT1,SLOT2);

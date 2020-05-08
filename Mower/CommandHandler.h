@@ -23,8 +23,13 @@ public:
 
 	~CommandHandler();
 	//get singelton instance
-	//static CommandHandler* getInstance();
-	CommandHandler();
+	static CommandHandler* getInstance()
+	{
+		static CommandHandler* instance = nullptr;
+		if (instance == nullptr)
+			instance = new CommandHandler();
+		return instance;
+	}
 
 	//initilize the class. must be called before any other calls
 	void init(int,int);
@@ -42,6 +47,7 @@ public:
 	void stopEngine();
 
 private:
+	CommandHandler();
 	
 	//sends a command to engine
 	void sendCmdToEngine(EngineModule::cmd);

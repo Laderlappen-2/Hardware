@@ -64,9 +64,6 @@ void MultiDriver::run()
 	selectedDriver->run();
 }
 
-void MultiDriver::onActuvation()
-{
-}
 
 void MultiDriver::sendCMD()
 {
