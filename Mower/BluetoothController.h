@@ -3,6 +3,7 @@
 #include "Queue.h"
 #include <ArduinoSTL.h>
 #include <stdlib.h>
+#include "AppInstructions.h"
 
 using namespace std;
 class BluetoothController
@@ -48,6 +49,13 @@ public:
 	//adds a listner that listen for a specific rx type and will be called when it is recived
 	void addReciveListner(reciveType_e,void(*callback)(int[],int));
 
+//############## JONATHANS FUNCTIONS #################
+
+	void decodeMessage(String msg);
+	void readBluetooth();
+
+//############## JONATHANS FUNCTIONS END ##############
+
 private:
 	BluetoothController();
 
@@ -64,10 +72,10 @@ private:
 	};
 
 	//function to be called when 
-	static void reciveListnerBT(string message)
+	/*static void reciveListnerBT(string message)
 	{
 		getInstance()->rxBuffer.enqueue(message);
-	}
+	}*/
 	rxPackage unpackMessage(String);
 	bool msgIsAck(String);
 	String trim(String);
@@ -101,4 +109,3 @@ private:
 
 
 };
-

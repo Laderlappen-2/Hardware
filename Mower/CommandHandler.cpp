@@ -37,8 +37,8 @@ void CommandHandler::run()
 		{
 			state = doSequence;
 			
-			Serial.print("Starting sequence ");
-			Serial.println(commandQueue.count());
+			//Serial.print("Starting sequence ");
+			//Serial.println(commandQueue.count());
 		}
 		break;
 	case doSequence:// runs the sequense and waits until it's done
@@ -47,8 +47,8 @@ void CommandHandler::run()
 		break;
 	case callback:// calls the callback function (if there is any) and removes the sequense from the queue
 		
-		Serial.print("Sequence Done ");
-		Serial.println(commandQueue.count());
+		//Serial.print("Sequence Done ");
+		//Serial.println(commandQueue.count());
 		delete commandQueue.dequeue();
 		state = idle;
 		if (commandQueue.front()->callback != nullptr)
@@ -76,7 +76,7 @@ bool CommandHandler::runSequence()
 	case load:// loads the front sequense from the queue
 		if (commandQueue.isEmpty())
 		{
-			Serial.println("\tEmpty sequence");
+			//Serial.println("\tEmpty sequence");
 			return true;
 		}
 
@@ -86,20 +86,20 @@ bool CommandHandler::runSequence()
 	case send:// sends the front cmd in the sequense to the engine and removes it from the queue
 		if (!engine->isReady())
 			break;
-		Serial.print("\tSending cmd ");
+		//Serial.print("\tSending cmd ");
 
-		Serial.println(SEQUENCE.count());
+		//Serial.println(SEQUENCE.count());
 		sendCmdToEngine(SEQUENCE.dequeue());
 		state = wait;
 
-		Serial.print("\tWaiting...");
+		//Serial.print("\tWaiting...");
 		break;
 	case wait:// waits to run the sequense until the engine is ready
 		if (engine->isReady()) 
 			state = check;
 		break;
 	case check://checks if end of sequens and returns true if it is.
-		Serial.println("Done.");
+		//Serial.println("Done.");
 		//if (sequence.sequense.isEmpty())
 		if (SEQUENCE.isEmpty())
 		{

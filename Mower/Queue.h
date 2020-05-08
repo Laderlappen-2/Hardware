@@ -75,7 +75,7 @@ inline T Queue<T>::dequeue()
 {
 	if (isEmpty())
 	{
-		Serial.println("QUEUE: can't deqeue, queue is empty");
+		//Serial.println("QUEUE: can't deqeue, queue is empty");
 		return;
 	}
 

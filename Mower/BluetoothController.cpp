@@ -78,6 +78,7 @@ void BluetoothController::runRX()
 		return;
 	}
 
+	Serial.println(message);
 	rxPackage package = unpackMessage(message);
 	sendToListner(package);
 	
@@ -87,26 +88,12 @@ void BluetoothController::runRX()
 
 void BluetoothController::send(EventType_e type, int xPos, int yPos)
 {
-	string message = "";
-
-	message.append(&ioStart);
-	message.append(String(type).c_str());
-	message.append(&ioSeperator);
-	message.append(String(xPos).c_str());
-	message.append(&ioSeperator);
-	message.append(String(yPos).c_str());
-	message.append(&ioSeperator);
-	message.append(String(millis()).c_str());
-	message.append(&ioEnd);
-
-	sendBuffer.enqueue(message);
-
-	//sendBuffer.enqueue(
-	//	ioStart + String(type).c_str() + 
-	//	ioSeperator + String(xPos).c_str() +
-	//	ioSeperator + String(yPos).c_str() +
-	//	ioSeperator + String(millis()).c_str() +
-	//	ioEnd);
+	sendBuffer.enqueue(
+		ioStart + String(type) + 
+		ioSeperator + String(xPos) +
+		ioSeperator + String(yPos) +
+		ioSeperator + String(millis()) +
+		ioEnd);
 }
 
 void BluetoothController::addReciveListner(reciveType_e type, void(*callback)(int[], int))
@@ -121,6 +108,7 @@ void BluetoothController::addReciveListner(reciveType_e type, void(*callback)(in
 
 void BluetoothController::sendToListner(rxPackage package)
 {
+	Serial.println("sendToListner");
 	for (int i = 0; i < listners.size(); i++)
 	{
 		if (listners.at(i).type == package.type)
@@ -156,16 +144,21 @@ bool BluetoothController::msgIsAck(String message)
 String BluetoothController::trim(String message)
 {
 	//removing start and end notation
+	Serial.println(message);
 	int startIndex = -1;
 	int endIndex = -1;
 	for (int i = 0; i < message.length(); i++)
 	{
 		char c = message.charAt(i);
 		if (c == ioStart)
+		{
 			startIndex = i;
+			Serial.println(i);
+		}
 		else if (c == ioEnd)
 		{
 			endIndex = i;
+			Serial.println(i);
 			break;
 		}
 	}
@@ -186,7 +179,7 @@ String * BluetoothController::split(String message)
 	int index = 0;
 	for (int i = 0; i < message.length(); i++)
 	{
-		if (message.at(i) == ioSeperator)
+		if (message.charAt(i) == ioSeperator)
 		{
 			subMessage[index] = str;
 			str = "";
@@ -228,4 +221,57 @@ void BluetoothController::sendAcknowledge(reciveType_e type)
 		ioSeperator + 'A' +
 		ioEnd;
 	Serial.print(ackMsg);
+}
+
+
+//############## JONATHANS FUNCTIONS #################
+
+// Message format: @VELOCITY;TURN;LIGHT;HONK;AUTODRIVE$    @(-255 - 255);(-255 - 255);1/0;1/0;1/0$
+void BluetoothController::decodeMessage(String msg)
+{
+  Serial.println(msg);
+
+  int idx1 = msg.indexOf(';');
+  String velocityStr = msg.substring(1, idx1);
+
+  int idx2 = msg.indexOf(';', idx1 + 1);
+  String turnStr = msg.substring(idx1 + 1, idx2);
+
+  int idx3 = msg.indexOf(';', idx2 + 1);
+  String lightStr = msg.substring(idx2 + 1, idx3);
+
+  int idx4 = msg.indexOf(';', idx3 + 1);
+  String honkStr = msg.substring(idx3 + 1, idx4);
+
+  int idx5 = msg.indexOf('\0', idx4 + 1);
+  String autodriveStr = msg.substring(idx4 + 1, idx5);
+
+  Serial.println("VELOCITY:\t" + velocityStr);
+  Serial.println("TURN:\t" + turnStr);
+  Serial.println("LIGHT:\t" + lightStr);
+  Serial.println("HONK:\t" + honkStr);
+  Serial.println("AUTODRIVE:\t" + autodriveStr);
+
+  AppInstructions* appInstructions = AppInstructions::getInstance();
+  appInstructions->setInstructions(velocityStr.toInt(), turnStr.toInt(), lightStr.toInt(), honkStr.toInt(), autodriveStr.toInt());
+  appInstructions->setInstructionsAvailable(true);
+}
+
+void BluetoothController::readBluetooth()
+{
+	String message;
+
+	while(Serial.available() > 0)
+	{
+		delay(10);
+		char currentChar = Serial.read();
+
+		if(currentChar == '$')
+			break;
+
+		message += currentChar;
+	}
+
+	if(message.charAt(0) == '@')
+		decodeMessage(message);
 }

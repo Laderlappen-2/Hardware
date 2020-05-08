@@ -5,7 +5,8 @@
 
 CommandHandler *commandHandler;
 BluetoothController *btController = BluetoothController::getInstance();
-
+AppInstructions* appInstructions = AppInstructions::getInstance();
+byte byteArr[3] = {97,98,99};
 
 void rxListner(int data[], int size)
 {
@@ -18,36 +19,60 @@ void rxListner(int data[], int size)
 
 	Serial.print('\n');
 }
+
 void setTestSequence()
 {
-	Serial.println("Adding cmd Sequence");
+	//Serial.println("Adding cmd Sequence");
 	//								speed,	turn,		ms
-	EngineModule::cmd sequence[] = {{255,	NO_TURN,	500},
-									{200,	7,			100},};
+	//EngineModule::cmd sequence[] = {{appInstructions->getVelocity(),	appInstructions->getTurn(),	1000}};
 
-	commandHandler->addCommand(sequence, 2, setTestSequence);
+  EngineModule::cmd sequence[] = {{appInstructions->getVelocity(), appInstructions->getTurn(), 2000}};
+	commandHandler->addCommand(sequence, 1, setTestSequence);
+}
+
+//TestCode for bluetooth
+void checkBluetooth()
+{
+  while(Serial.available() > 0)
+  {
+    delay(10);
+    char currentChar = Serial.read();
+    Serial.println(currentChar);
+
+    if(currentChar == '@')
+	    setTestSequence();
+  }
+
 }
 
 void setup()
 {
-	  //Serial.begin(9600);
-	btController->init(9600);
+  Serial.begin(115200);
+	//btController->init(115200);
 
 	//commandHandler = CommandHandler::getInstance();
 	commandHandler = new CommandHandler();
 	commandHandler->init(SLOT1,SLOT2);
-	setTestSequence();
+	//setTestSequence();
 
-	btController->addReciveListner(BluetoothController::reciveType_e::atomatic, rxListner);
+	/*btController->addReciveListner(BluetoothController::reciveType_e::atomatic, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::drive, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::honk, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::ligh, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::manuall, rxListner);
-	btController->addReciveListner(BluetoothController::reciveType_e::turnOff, rxListner);
+	btController->addReciveListner(BluetoothController::reciveType_e::turnOff, rxListner);*/
 }
 
 void loop()
 {  
-	btController->run();
 	commandHandler->run();
+
+	btController->readBluetooth();
+
+  if(appInstructions->getInstructionsAvailable())
+  {
+    setTestSequence();
+    appInstructions->setInstructionsAvailable(false);
+  }
+  
 }
