@@ -5,7 +5,7 @@ AutoDriver::AutoDriver()
     commandInstance = CommandHandler::getInstance();
 }
 
-void init()
+void AutoDriver::init()
 {
 
 }
@@ -40,11 +40,12 @@ void AutoDriver::run()
     case avoidCollision:
         commandInstance->stopEngine();
         commandInstance->clear();          // Should be here ?
-        commandInstance->addCommand(-50, 0, 250);
-        commandInstance->addCommand(0, 25, 100);
+		//TODO Fix syntax
+        //commandInstance->addCommand(-50, 0, 250);
+        //commandInstance->addCommand(0, 25, 100);
 
         // TODO rapportera till BT
-        clock_t start = clock();
+        //clock_t start = clock();
         /*
             Send a message followed by 'start', which is time elapsed since program start
             Example @event,X,Y,klocka$ :
@@ -55,7 +56,9 @@ void AutoDriver::run()
         state = drive;
         break;
     case drive:
-        commandInstance->addCommand(75, 0, -1);
+
+		//TODO fix syntax
+        //commandInstance->addCommand(75, 0, -1);
         state = idle;
         break;
     default:
@@ -63,7 +66,7 @@ void AutoDriver::run()
     }
 }
 
-void listener(int[], int)
+void AutoDriver::listener(int[], int)
 {
 
 }
