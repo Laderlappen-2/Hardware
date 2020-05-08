@@ -1,5 +1,6 @@
 #include "MeAuriga.h"
 #include "CommandHandler.h"
+#include "EngineModule.h"
 #include "SensorController.h"
 
 #include "MultiDriver.h"
@@ -10,6 +11,7 @@
 CommandHandler *commandHandler;
 SensorController *sensor;
 MultiDriver *driver;
+EngineModule* engine;
 
 enum driveType_e
 {
@@ -24,7 +26,10 @@ void setup()
 	sensor = SensorController::getInstance();
 
 	commandHandler = CommandHandler::getInstance();
-	commandHandler->init(SLOT1, SLOT2);
+	commandHandler->init();
+
+	engine = EngineModule::getInstance();
+	engine->init(SLOT1, SLOT2);
 
 	driver = new MultiDriver();
 	driver->init();
@@ -37,9 +42,5 @@ void loop()
 {
 	commandHandler->run();
 	driver->run();
-
-	//Serial.print("Distance : ");
-  //Serial.print(controller.getUltrasonicValue());  
-  //Serial.println(" cm");
-
+	engine->run();
 }

@@ -1,13 +1,17 @@
 #include "EngineModule.h"
 
-EngineModule::EngineModule() {}
 
-EngineModule::EngineModule(int slot1, int slot2)
+EngineModule::EngineModule()
+{
+
+}
+
+void EngineModule::init(int slot1, int slot2)
 {
 	Wheel_Right = new MeEncoderOnBoard(slot1);
 	Wheel_Left = new MeEncoderOnBoard(slot2);
-
 }
+
 
 void EngineModule::setCommand(cmd command)
 {
@@ -117,6 +121,11 @@ void EngineModule::run()
 	}
 }
 
+EngineModule::point_s EngineModule::getPosition()
+{
+	return position;
+}
+
 void EngineModule::execute_command(cmd *command)
 {
 	command->speed = constrain(command->speed, -255, 255);
@@ -129,8 +138,8 @@ void EngineModule::execute_command(cmd *command)
 	}
 
 	float rRight, rLeft;
-	rRight = command->turnRadius - (_wheelToWheelGap / 2);
-	rLeft = command->turnRadius + (_wheelToWheelGap / 2);
+	rRight = command->turnRadius - (_wheelToWheelGap_cm / 2);
+	rLeft = command->turnRadius + (_wheelToWheelGap_cm / 2);
 
 	if (command->turnRadius > 0)
 	{
@@ -147,6 +156,37 @@ void EngineModule::execute_command(cmd *command)
 	}
 
 
+}
+
+void EngineModule::updatePosition()
+{   
+	static long oldAngleLeft =0;
+	static long oldAngleRight = 0;
+	// get the angular distance traveled by each wheel since the last update
+	double leftDegrees = oldAngleLeft - Wheel_Left->getCurPos();
+	double rightDegrees = oldAngleRight - Wheel_Right->getCurPos();
+	oldAngleLeft = Wheel_Left->getCurPos();
+	oldAngleRight = Wheel_Right->getCurPos();
+
+
+	// convert the angular distances to linear distances
+	double dLeft = leftDegrees / DEGREES_PER_MILLIMETER;
+	double dRight = rightDegrees / DEGREES_PER_MILLIMETER;
+
+	// calculate the length of the arc traveled by Colin
+	double dCenter = (dLeft + dRight) / 2.0;
+
+	// calculate Colin's change in angle
+	double phi = (dRight - dLeft) / (double)_wheelToWheelGap_cm;
+	// add the change in angle to the previous angle
+	_robotAngle_rad += phi;
+	// constrain _theta to the range 0 to 2 pi
+	if (_robotAngle_rad > 2.0 * PI) _robotAngle_rad -= 2.0 * PI;
+	if (_robotAngle_rad < 0.0) _robotAngle_rad += 2.0 * PI;
+
+	// update Colin's x and y coordinates
+	position._x += dCenter * cos(_robotAngle_rad);
+	position._y += dCenter * sin(_robotAngle_rad);
 }
 
 void EngineModule::stopp()

@@ -5,22 +5,19 @@
 CommandHandler::CommandHandler()
 {
 }
-void CommandHandler::init(int slot1,int slot2)
+void CommandHandler::init()
 {
-	engine = new EngineModule(slot1,slot2);
+	engine == EngineModule::getInstance();
 }
 
 
 
 CommandHandler::~CommandHandler()
 {	
-	delete engine;
 }
 
 void CommandHandler::run()
 {
-	engine->run();
-	
 	enum state_e
 	{
 		idle,

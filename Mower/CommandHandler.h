@@ -32,7 +32,7 @@ public:
 	}
 
 	//initilize the class. must be called before any other calls
-	void init(int,int);
+	void init();
 
 	//run the main state machine
 	void run();
