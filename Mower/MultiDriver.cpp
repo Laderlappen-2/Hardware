@@ -40,7 +40,7 @@ void MultiDriver::selectDriver(String name)
 	{
 		if (list->getItem().nickname == name)
 		{
-			selectedDriver->onDeactiovation();
+			selectedDriver->onDeactivation();
 			selectedDriver = list->getItem().driver;
 			selectedDriver->onActivation();
 
@@ -74,4 +74,3 @@ void MultiDriver::listener(int data[], int size)
 {
 	selectedDriver->listener(data, size);
 }
-

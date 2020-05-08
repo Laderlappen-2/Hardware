@@ -19,7 +19,7 @@ public:
 
 
 	virtual void onActivation();
-	virtual void onDeactiovation();
+	virtual void onDeactivation();
 protected:
 
 

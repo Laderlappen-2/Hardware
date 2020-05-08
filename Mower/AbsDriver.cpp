@@ -25,6 +25,6 @@ void AbsDriver::onActivation()
 {
 }
 
-void AbsDriver::onDeactiovation()
+void AbsDriver::onDeactivation()
 {
 }

@@ -10,7 +10,7 @@ void init()
 
 }
 
-void AutoDriver::onDeactiovation()
+void AutoDriver::onDeactivation()
 {
 
 }

@@ -12,7 +12,7 @@ public:
   void run();
   void listener(int[], int);
   void onActivation();
-  void onDeactiovation();
+  void onDeactivation();
 private:
 
     CommandHandler* commandInstance;
