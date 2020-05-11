@@ -79,7 +79,7 @@ private:
 	rxPackage unpackMessage(String);
 	bool msgIsAck(String);
 	String trim(String);
-	String* split(String);
+	vector<String> split(String, char);
 	rxPackage map(String, String, String);
 	void sendAcknowledge(reciveType_e);
 
