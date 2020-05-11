@@ -7,17 +7,17 @@ CommandHandler::CommandHandler()
 }
 void CommandHandler::init()
 {
+	engine == EngineModule::getInstance();
 }
 
 
 
 CommandHandler::~CommandHandler()
 {	
-	//delete engine;
 }
 
 void CommandHandler::run()
-{	
+{
 	enum state_e
 	{
 		idle,

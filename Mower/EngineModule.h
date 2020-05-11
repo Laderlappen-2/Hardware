@@ -6,7 +6,7 @@ class EngineModule{
 
 public:
 
-#define NO_TURN 0
+#define NO_TURN 3001
 
     struct cmd
     {
@@ -24,17 +24,26 @@ public:
 			return speed == c.speed && turnRadius == c.turnRadius && time_ms == c.time_ms;				
 		}
     };
+	struct point_s
+	{
+		int _x;
+		int _y;
+	};
 
-    static EngineModule* getInstance() {
-        static EngineModule* instance = nullptr;
-        if (instance == nullptr)
-            instance = new EngineModule();
-        return instance;
-    }
 
-	void init(int,int);
+	static EngineModule *getInstance()
+	{
+		static EngineModule* instance = nullptr;
+		if (instance == nullptr)
+			instance = new EngineModule();
+		return instance;
+	}
+	void init(int, int);
+
 
     void run();
+
+	point_s getPosition();
 
     void setCommand(cmd);
 
@@ -48,12 +57,16 @@ public:
 
 private:
     EngineModule();
+	
+    void execute_command(cmd*);
+	void updatePosition();
+
+
+
+	point_s position;
 
     MeEncoderOnBoard *Wheel_Right;
     MeEncoderOnBoard *Wheel_Left;
-
-    void execute_command(cmd*);
-
     bool _ready = true;
 
     cmd current_command;
@@ -61,7 +74,10 @@ private:
 	const int motorPWMmax = 255;
 	const int motorPWMmin = -255;
 
-    const float _wheelToWheelGap = 14.6;
+	const float _wheelRadius_cm = 0;
+#define DEGREES_PER_MILLIMETER (_wheelRadius_cm * 2 * PI / 360)
+    const float _wheelToWheelGap_cm = 14.6;
+	double _robotAngle_rad;
 
     const int _rightWheelOffset = 17;
     const int _leftWheelOffset = 0;
