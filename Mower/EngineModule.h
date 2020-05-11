@@ -25,9 +25,16 @@ public:
 		}
     };
 
-    EngineModule();
+    
 
     EngineModule(int, int);
+
+    static CommandHandler* getInstance() {
+        static CommandHandler* instance = nullptr;
+        if (instance == nullptr)
+            instance = new CommandHandler();
+        return instance;
+    }
 
     void run();
 
@@ -42,6 +49,7 @@ public:
     void stopp();
 
 private:
+    EngineModule();
 
     MeEncoderOnBoard *Wheel_Right;
     MeEncoderOnBoard *Wheel_Left;
