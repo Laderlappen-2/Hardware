@@ -7,7 +7,6 @@ ManualDriver::ManualDriver()
 }
 void ManualDriver::init()
 {
-	//sensorInstance = SensorController::getInstance();
 }
 void ManualDriver::sendCMD(int speed, int turn) 
 {
@@ -24,6 +23,7 @@ void ManualDriver::run()
 		fix,
 	};
 	static state_s state = normal;
+	EngineModule::cmd command = {-50,0,-1};
 
 	switch (state)
 	{
@@ -44,7 +44,7 @@ void ManualDriver::run()
 		*/
 		commandInstance->stopEngine();
 		//TODO fix syntax
-		//commandInstance->addCommand(-50, 0, -1);
+		commandInstance->addCommand(command);
 		state = fix;
 		break;
 	case fix:

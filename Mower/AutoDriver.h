@@ -16,4 +16,5 @@ public:
 private:
 
     CommandHandler* commandInstance;
+    SensorController* sensorInstance;
 };

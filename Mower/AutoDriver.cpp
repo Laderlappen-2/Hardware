@@ -2,6 +2,7 @@
 
 AutoDriver::AutoDriver()
 {
+    sensorInstance = SensorController::getInstance();
     commandInstance = CommandHandler::getInstance();
 }
 
@@ -29,7 +30,9 @@ void AutoDriver::run()
     avoidCollision,
     drive
     };
-    static state_e state = drive;
+    static state_e state = drive;        
+    EngineModule::cmd command;
+
 
     switch (state)
     {
@@ -41,8 +44,19 @@ void AutoDriver::run()
         commandInstance->stopEngine();
         commandInstance->clear();          // Should be here ?
 		//TODO Fix syntax
-        //commandInstance->addCommand(-50, 0, 250);
-        //commandInstance->addCommand(0, 25, 100);
+
+        //EngineModule::cmd command = { -50, 0, 250 };
+        command.speed = -50;
+        command.turnRadius = 0;
+        command.time_ms = 250;
+        commandInstance->addCommand(command);
+        command.speed = 0;
+        command.turnRadius = 25;
+        command.time_ms = 100;
+        commandInstance->addCommand(command);
+
+        //commandInstance->addCommand(new EngineModule::cmd(-50, 0, 250));
+        //commandInstance->addCommand(new EngineModule::cmd(0, 25, 100));
 
         // TODO rapportera till BT
         //clock_t start = clock();
@@ -57,8 +71,12 @@ void AutoDriver::run()
         break;
     case drive:
 
-		//TODO fix syntax
-        //commandInstance->addCommand(75, 0, -1);
+		//TODO fix syntax        EngineModule::cmd command = new EngineModule::cmd;
+        //EngineModule::cmd command = new EngineModule::cmd;
+        command.speed = 75;
+        command.turnRadius = 0;
+        command.time_ms = -1;
+        commandInstance->addCommand(command);
         state = idle;
         break;
     default:
