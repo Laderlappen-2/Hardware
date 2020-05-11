@@ -73,27 +73,17 @@ void BluetoothController::runRX()
     delay(10);
     char currentChar = Serial.read();
     message += currentChar;
-
-    if(currentChar == '$')
-    {
-      Serial.println("MESSAGE DONE READING: " + message);
-      //rxBuffer.enqueue(message);
-      //break;
-    }
   }
   
   if(message == "")
     return;
-
-  Serial.println("Hello World!");
   
 	if (msgIsAck(message))
 	{
 		ackRecived = true;
 		return;
 	}
-
-	//Serial.println("IN runRX(): " + message);
+ 
 	rxPackage package = unpackMessage(message);
 	sendToListner(package);
 	
@@ -115,7 +105,6 @@ void BluetoothController::addReciveListner(reciveType_e type, void(*callback)(in
 {
 	if (callback == nullptr)
 	{
-		Serial.println("BTC: can't set callback, function is nullptr");
 		return;
 	}
 	listners.push_back(rxListner_s{ type,callback });
@@ -123,11 +112,8 @@ void BluetoothController::addReciveListner(reciveType_e type, void(*callback)(in
 
 void BluetoothController::sendToListner(rxPackage package)
 {
-	Serial.println("IN sendToListner()");
 	for (int i = 0; i < listners.size(); i++)
 	{
-    Serial.println(listners.at(i).type);
-    Serial.println(package.type);
 		if (listners.at(i).type == package.type)
 		{
 			int* data = new int[package.data.size()];
@@ -139,7 +125,6 @@ void BluetoothController::sendToListner(rxPackage package)
 			delete data;
 		}
 	}
- Serial.println("LEAVING sendToListner()");
 }
 
 
@@ -147,9 +132,7 @@ void BluetoothController::sendToListner(rxPackage package)
 BluetoothController::rxPackage BluetoothController::unpackMessage(String rawMessage)
 {
 	String message = trim(rawMessage);
-  Serial.println("TRIM DONE");
 	vector<String> subMessage = split(message, ioSeperator);
-  Serial.println("SPLIT DONE");
 	rxPackage package = map(subMessage.at(0), subMessage.at(1), subMessage.at(2));
 	return package;
 }
@@ -162,68 +145,18 @@ bool BluetoothController::msgIsAck(String message)
 
 String BluetoothController::trim(String message)
 {
-	//removing start and end notation
-	Serial.println(message);
-	/*int startIndex = -1;
-	int endIndex = -1;
-	for (int i = 0; i < message.length(); i++)
-	{
-		char c = message.charAt(i);
-		if (c == ioStart)
-		{
-			startIndex = i;
-			Serial.println(i);
-		}
-		else if (c == ioEnd)
-		{
-			endIndex = i;
-			Serial.println(i);
-			break;
-		}
-	}
-	if (startIndex < 0)
-		Serial.println("BTC: missing start notation");
-	if (endIndex < 0)
-		Serial.println("BTC: missing start notation");
-	if (startIndex < 0 || endIndex < 0)
-		return;*/
-
   int startIndex = message.indexOf(ioStart);
   int endIndex = message.indexOf(ioEnd);
-
 	return (message.substring(startIndex + 1, endIndex));
 }
 vector<String> BluetoothController::split(String message, char separator)
 {	
-	//seperate by io seperator
-	/*String *subMessage = new String[RX_PACKAGE_SIZE];	
-	String str = "";
-	int index = 0;
-	for (int i = 0; i < message.length(); i++)
-	{
-		if (message.charAt(i) == ioSeperator)
-		{
-			subMessage[index] = str;
-      index++;
-			str = "";
-			continue;
-		}
-		str += message.charAt(i);
-	}
-  subMessage[RX_PACKAGE_SIZE - 1] = str;
-  Serial.print(subMessage[0]);
-  Serial.print(subMessage[1]);
-  Serial.println(subMessage[2]);
-	return subMessage;*/
-
   vector<String> returnVector;
   int startIndex = 0;
   int endIndex = 0;
   
   while(startIndex >= 0 && startIndex < message.length())
   {
-    //Serial.println("START INDEX: " + String(startIndex));
-    //Serial.println("END INDEX: " + String(endIndex));
     endIndex = message.indexOf(separator, startIndex);
     
     if(endIndex < 0)
@@ -231,27 +164,12 @@ vector<String> BluetoothController::split(String message, char separator)
       
     returnVector.push_back(message.substring(startIndex, endIndex));
     startIndex = endIndex + 1;
-    Serial.println(returnVector.back());
   }
   return returnVector;
 }
 BluetoothController::rxPackage BluetoothController::map(String type, String data, String ack)
 {
 	rxPackage package;
-	/*String value = "";
-  
-	for (int i = 0; i < data.length(); i++)
-	{
-		char c = data.charAt(i);
-		if (c == ioDataSeperator)
-		{
-			package.data.push_back(value.toInt());
-			value = "";
-			continue;
-		}
-		value += c;
-	}*/
-
   vector<String> dataStr = split(data, ioDataSeperator);
 
   while(!dataStr.empty())
@@ -296,12 +214,6 @@ void BluetoothController::decodeMessage(String msg)
 
   int idx5 = msg.indexOf('\0', idx4 + 1);
   String autodriveStr = msg.substring(idx4 + 1, idx5);
-
-  /*Serial.println("VELOCITY:\t" + velocityStr);
-  Serial.println("TURN:\t" + turnStr);
-  Serial.println("LIGHT:\t" + lightStr);
-  Serial.println("HONK:\t" + honkStr);
-  Serial.println("AUTODRIVE:\t" + autodriveStr);*/
 
   AppInstructions* appInstructions = AppInstructions::getInstance();
   appInstructions->setInstructions(velocityStr.toInt(), turnStr.toInt(), lightStr.toInt(), honkStr.toInt(), autodriveStr.toInt());
