@@ -11,13 +11,10 @@ public:
 	ManualDriver();
 
 	void init();
-
 	void run();
-protected:
-
-	void sendCMD(int, int);
-
 	void listener(int[], int);
+	void sendCMD(int, int);
+	
 private:
 
 	bool sensorOn = false;

@@ -13,6 +13,7 @@ public:
   void listener(int[], int);
   void onActivation();
   void onDeactivation();
+
 private:
 
     CommandHandler* commandInstance;
