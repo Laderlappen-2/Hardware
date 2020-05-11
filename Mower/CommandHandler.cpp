@@ -7,14 +7,14 @@ CommandHandler::CommandHandler()
 }
 void CommandHandler::init(int slot1,int slot2)
 {
-	engine = new EngineModule(slot1,slot2);
+	engine = EngineModule::getInstance();
 }
 
 
 
 CommandHandler::~CommandHandler()
 {	
-	delete engine;
+	//delete engine;
 }
 
 void CommandHandler::run()

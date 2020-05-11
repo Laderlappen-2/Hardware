@@ -58,5 +58,4 @@ private:
 	EngineModule* engine;
 	//QueueArray<cmdSequense> commandQueue;
 	Queue<cmdSequense*> commandQueue;
-
 };
