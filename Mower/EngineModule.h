@@ -25,14 +25,10 @@ public:
 		}
     };
 
-    
-
-    EngineModule(int, int);
-
-    static CommandHandler* getInstance() {
-        static CommandHandler* instance = nullptr;
+    static EngineModule* getInstance() {
+        static EngineModule* instance = nullptr;
         if (instance == nullptr)
-            instance = new CommandHandler();
+            instance = new EngineModule();
         return instance;
     }
 
@@ -50,6 +46,7 @@ public:
 
 private:
     EngineModule();
+    EngineModule(int, int);
 
     MeEncoderOnBoard *Wheel_Right;
     MeEncoderOnBoard *Wheel_Left;
