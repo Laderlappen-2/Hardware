@@ -2,7 +2,7 @@
 
 EngineModule::EngineModule() {}
 
-EngineModule::EngineModule(int slot1, int slot2)
+void EngineModule::init(int slot1, int slot2)
 {
 	Wheel_Right = new MeEncoderOnBoard(slot1);
 	Wheel_Left = new MeEncoderOnBoard(slot2);

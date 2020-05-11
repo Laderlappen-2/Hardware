@@ -8,7 +8,7 @@ BluetoothController::BluetoothController()
 
 void BluetoothController::init(int baud)
 {
-	Serial.begin(baud);
+	//Serial.begin(baud);
 }
 
 BluetoothController::~BluetoothController()

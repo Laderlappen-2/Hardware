@@ -32,6 +32,8 @@ public:
         return instance;
     }
 
+	void init(int,int);
+
     void run();
 
     void setCommand(cmd);
@@ -46,7 +48,6 @@ public:
 
 private:
     EngineModule();
-    EngineModule(int, int);
 
     MeEncoderOnBoard *Wheel_Right;
     MeEncoderOnBoard *Wheel_Left;
