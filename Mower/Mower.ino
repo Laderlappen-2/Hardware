@@ -10,14 +10,13 @@ byte byteArr[3] = {97,98,99};
 
 void rxListner(int data[], int size)
 {
-	Serial.print("Recived data: ");
+	Serial.println("IN rxListner(): Recived data: ");
 	for (int i = 0; i < size; i++)
 	{
 		Serial.print(data[i]);
 		Serial.print(", ");
 	}
-
-	Serial.print('\n');
+  Serial.print("\n");
 }
 
 void setTestSequence()
@@ -26,7 +25,7 @@ void setTestSequence()
 	//								speed,	turn,		ms
 	//EngineModule::cmd sequence[] = {{appInstructions->getVelocity(),	appInstructions->getTurn(),	1000}};
 
-  EngineModule::cmd sequence[] = {{appInstructions->getVelocity(), appInstructions->getTurn(), 2000}};
+  EngineModule::cmd sequence[] = {{appInstructions->getVelocity(), appInstructions->getTurn(), 500}};
 	commandHandler->addCommand(sequence, 1, setTestSequence);
 }
 
@@ -55,24 +54,26 @@ void setup()
 	commandHandler->init(SLOT1,SLOT2);
 	//setTestSequence();
 
-	/*btController->addReciveListner(BluetoothController::reciveType_e::atomatic, rxListner);
+	btController->addReciveListner(BluetoothController::reciveType_e::atomatic, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::drive, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::honk, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::ligh, rxListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::manuall, rxListner);
-	btController->addReciveListner(BluetoothController::reciveType_e::turnOff, rxListner);*/
+	btController->addReciveListner(BluetoothController::reciveType_e::turnOff, rxListner);
 }
 
 void loop()
-{  
+{
 	commandHandler->run();
+  btController->run();
+  //btController->run();
+	//btController->readBluetooth();
 
-	btController->readBluetooth();
-
-  if(appInstructions->getInstructionsAvailable())
+  /*if(appInstructions->getInstructionsAvailable())
   {
     setTestSequence();
     appInstructions->setInstructionsAvailable(false);
-  }
+    Serial.write(appInstructions->getVelocity());
+  }*/
   
 }

@@ -5,7 +5,7 @@ class EngineModule{
 
 public:
 
-#define NO_TURN 3001
+#define NO_TURN 0
 
 struct cmd
     {
