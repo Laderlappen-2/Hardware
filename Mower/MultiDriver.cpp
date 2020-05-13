@@ -37,24 +37,7 @@ void MultiDriver::addDriver(AbsDriver * driver, String name)
 
 void MultiDriver::selectDriver(String name)
 {
-	//Serial.println("MULTIDRIVER NAME: " + name);
-	  //driverList* list = &drivers;
-	  //while (list!= nullptr)
-	  //{
-   //   Serial.println("ITEM: " + list->getItem().nickname);
-	  //	if (list->getItem().nickname == name)
-	  //	{
-   //     Serial.println("FOUND DRIVER!");
-	  //		selectedDriver->onDeactivation();
-	  //		selectedDriver = list->getItem().driver;
-	  //		selectedDriver->onActivation();
-
-	  //		break;
-	  //	}
-	  //	list = list->getNext();
-	  //}
-
-	for (int i = 0; i < drivers.size(); i++)
+	/*for (int i = 0; i < drivers.size(); i++)
 	{
 		if (drivers.at(i).nickname == name)
 		{
@@ -64,24 +47,33 @@ void MultiDriver::selectDriver(String name)
 			selectedDriver->onActivation();
 			break;
 		}
-	}
+	}*/
+
+  for(int i = 0; i < drivers.size(); i++)
+  {
+    if(drivers.at(i).nickname == name)
+    {
+      selectedDriver = drivers.at(i).driver;
+      Serial.println(String(drivers.at(i).nickname) + " SELECTED");
+    }
+  }
 }
 
 void MultiDriver::run()
 {
-  STOP_IF_NULL;
+  RETURN_IF_NULL;
 	selectedDriver->run();
 }
 
 
 void MultiDriver::sendCMD()
 {
-  STOP_IF_NULL;
+  RETURN_IF_NULL;
 	selectedDriver->sendCMD();
 }
 
 void MultiDriver::listener(int data[], int size)
 {
-  STOP_IF_NULL;
+  RETURN_IF_NULL;
 	selectedDriver->listener(data, size);
 }

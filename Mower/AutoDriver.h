@@ -19,5 +19,5 @@ private:
     bool runAvoidCollision();
     CommandHandler* commandInstance;
     SensorController* sensorInstance;
-    BluetoothController* blueInstance;
+    BluetoothController* bluetoothInstance;
 };

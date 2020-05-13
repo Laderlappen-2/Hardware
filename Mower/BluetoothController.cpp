@@ -46,7 +46,8 @@ void BluetoothController::runTX()
 	case sending:
 		Serial.print(message);
 		startWait = millis();
-		state = waiting;
+		//state = waiting;
+    state = idle;
 
 		break;
 	case waiting:
@@ -96,7 +97,7 @@ void BluetoothController::send(EventType_e type, int xPos, int yPos)
 	sendBuffer.enqueue(
 		ioStart + String(type) + 
 		ioSeperator + String(xPos) +
-		ioSeperator + String(yPos) +
+		ioDataSeperator + String(yPos) +
 		ioSeperator + String(millis()) +
 		ioEnd);
 }

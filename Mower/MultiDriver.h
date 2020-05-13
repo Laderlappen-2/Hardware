@@ -51,5 +51,5 @@ private:
 	typedef vector<driver_s> driverList;
 
 	driverList drivers;
-  #define STOP_IF_NULL if(selectedDriver == nullptr) return;
+  #define RETURN_IF_NULL if(selectedDriver == nullptr) return;
 };

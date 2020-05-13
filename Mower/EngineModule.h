@@ -41,25 +41,27 @@ public:
 	void init(int, int);
 
 
-    void run();
+  void run();
 
 	point_s getPosition();
+  int getX();
+  int getY();
+  void updatePosition();
 
-    void setCommand(cmd);
+  void setCommand(cmd);
 
-    void setTurn(int);
+  void setTurn(int);
 
-    void setSpeed(int);
+  void setSpeed(int);
 
-    bool isReady();
+  bool isReady();
 
-    void stopp();
+  void stopp();
 
 private:
   EngineModule();
 
   void execute_command(cmd*);
-	void updatePosition();
 
   void setWheels(int, int);
 

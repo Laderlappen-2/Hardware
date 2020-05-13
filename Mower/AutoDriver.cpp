@@ -4,7 +4,7 @@ AutoDriver::AutoDriver()
 {
     sensorInstance = SensorController::getInstance();
     commandInstance = CommandHandler::getInstance();
-    blueInstance = BluetoothController::getInstance();
+    bluetoothInstance = BluetoothController::getInstance();
 }
 
 void AutoDriver::init()
@@ -49,6 +49,8 @@ void AutoDriver::run()
     case waitForCollision:
       if(sensorInstance->getUltrasonicValue() < safetyDistance)
       {
+        engine->updatePosition();
+        bluetoothInstance->send(bluetoothInstance->EventType_e::crachAvoidance, engine->getX(), engine->getY());
         state = handleCollision;
         startWaitTime = millis();
       }

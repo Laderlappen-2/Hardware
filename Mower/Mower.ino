@@ -31,11 +31,11 @@ void setup()
 
 	commandHandler = CommandHandler::getInstance();
 	commandHandler->init();
-  commandHandler->clear();
+  //commandHandler->clear();
 
 	engine = EngineModule::getInstance();
 	engine->init(SLOT1, SLOT2);
-  engine->stopp();
+  //engine->stopp();
 
 	driver = MultiDriver::getInstance();
 	driver->init();

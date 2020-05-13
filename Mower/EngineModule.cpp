@@ -124,6 +124,16 @@ EngineModule::point_s EngineModule::getPosition()
 	return position;
 }
 
+int EngineModule::getX()
+{
+  return position._x;
+}
+
+int EngineModule::getY()
+{
+  return position._y;
+}
+
 void EngineModule::execute_command(cmd *command)
 {
 	command->speed = constrain(command->speed, -255, 255);

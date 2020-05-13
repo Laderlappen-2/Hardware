@@ -13,15 +13,14 @@ public:
 	//types of events to send to app
 	enum EventType_e
 	{
-		literallyAnythingElse = '0',
-		crachAvoidance ='1',
+		literallyAnythingElse = 0,
+		crachAvoidance = 1,
 	};
 	
 	//types of events recivable from the app
 	enum reciveType_e
 	{
 		turnOff = 'Q',
-
 		drive ='D',
 		manuall = 'M',
 		atomatic = 'A',
