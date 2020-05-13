@@ -1,7 +1,7 @@
 #pragma once
 #include "AbsDriver.h"
-#include "LinkedList.h"
-
+//#include "LinkedList.h"
+#include <ArduinoSTL.h>
 
 class MultiDriver : protected AbsDriver
 {
@@ -46,7 +46,9 @@ private:
 	};
 
 	AbsDriver * selectedDriver;
-	typedef LinkedList<driver_s> driverList;
+	//typedef LinkedList<driver_s> driverList;
+	typedef vector<driver_s> driverList;
+
 	driverList drivers;
   #define STOP_IF_NULL if(selectedDriver == nullptr) return;
 };

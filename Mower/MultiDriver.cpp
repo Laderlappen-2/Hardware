@@ -9,17 +9,17 @@ MultiDriver::MultiDriver()
 
 MultiDriver::~MultiDriver()
 {
-	driverList* list = &drivers;
-	while (list != nullptr)
-	{
-		delete list->getItem().driver;
-		list = list->getNext();
-	}
-	//while (!drivers.empty())
+	//driverList* list = &drivers;
+	//while (list != nullptr)
 	//{
-	//	delete drivers.back().driver;
-	//	drivers.pop_back();
+	//	delete list->getItem().driver;
+	//	list = list->getNext();
 	//}
+	while (!drivers.empty())
+	{
+		delete drivers.back().driver;
+		drivers.pop_back();
+	}
 }
 
 void MultiDriver::init()
@@ -31,37 +31,44 @@ void MultiDriver::init()
 
 void MultiDriver::addDriver(AbsDriver * driver, String name)
 {
-	drivers.add(driver_s{ driver,name });
-	//drivers.push_back(driver_s{ driver,name });
+	//drivers.add(driver_s{ driver,name });
+	drivers.push_back(driver_s{ driver,name });
 }
 
 void MultiDriver::selectDriver(String name)
 {
-  Serial.println("MULTIDRIVER NAME: " + name);
-	driverList* list = &drivers;
-	while (list!= nullptr)
-	{
-    Serial.println("ITEM: " + list->getItem().nickname);
-		if (list->getItem().nickname == name)
-		{
-      Serial.println("FOUND DRIVER!");
-			selectedDriver->onDeactivation();
-			selectedDriver = list->getItem().driver;
-			selectedDriver->onActivation();
+	//Serial.println("MULTIDRIVER NAME: " + name);
+	  //driverList* list = &drivers;
+	  //while (list!= nullptr)
+	  //{
+   //   Serial.println("ITEM: " + list->getItem().nickname);
+	  //	if (list->getItem().nickname == name)
+	  //	{
+   //     Serial.println("FOUND DRIVER!");
+	  //		selectedDriver->onDeactivation();
+	  //		selectedDriver = list->getItem().driver;
+	  //		selectedDriver->onActivation();
 
+	  //		break;
+	  //	}
+	  //	list = list->getNext();
+	  //}
+
+
+	Serial.println("MULTIDRIVER NAME: " + name);
+	for (int i = 0; i < drivers.size(); i++)
+	{
+		Serial.println("ITEM: " + drivers.at(i).nickname);
+		if (drivers.at(i).nickname == name)
+		{
+			Serial.println("FOUND DRIVER!");
+			if (selectedDriver != nullptr)
+				selectedDriver->onDeactivation();
+			selectedDriver = drivers.at(i).driver;
+			selectedDriver->onActivation();
 			break;
 		}
-		list = list->getNext();
 	}
-
-	//for (int i = 0; i < drivers.size(); i++)
-	//{
-	//	if (drivers.at(i).nickname == name)
-	//	{
-	//		selectedDriver = drivers.at(i).driver;
-	//		break;
-	//	}
-	//}
 }
 
 void MultiDriver::run()
