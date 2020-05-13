@@ -4,6 +4,7 @@ AutoDriver::AutoDriver()
 {
     sensorInstance = SensorController::getInstance();
     commandInstance = CommandHandler::getInstance();
+    blueInstance = BluetoothController::getInstance();
 }
 
 void AutoDriver::init()
@@ -66,6 +67,10 @@ void AutoDriver::run()
                 @1,X,Y,start$
         
         */
+        EngineModule* engine = EngineModule::getInstance();
+        EngineModule::point_s point = engine->getPosition();
+        blueInstance->send(BluetoothController::EventType_e::crachAvoidance, point._x, point._y);
+        
 
         state = drive;
         break;
