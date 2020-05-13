@@ -18,4 +18,5 @@ private:
 
     CommandHandler* commandInstance;
     SensorController* sensorInstance;
+    BluetoothController* blueInstance;
 };
