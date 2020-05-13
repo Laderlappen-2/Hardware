@@ -10,9 +10,9 @@ public:
 
 	ManualDriver();
 
-	void init();
-	void run();
-	void listener(int[], int);
+	void init() override;
+	void run() override;
+	void listener(int[], int) override;
 	void sendCMD(int, int);
 	
 private:

@@ -8,11 +8,11 @@ public:
 
   AutoDriver();
 
-  void init();
-  void run();
-  void listener(int[], int);
-  void onActivation();
-  void onDeactivation();
+  void init() override;
+  void run() override;
+  void listener(int[], int) override;
+  void onActivation() override;
+  void onDeactivation() override;
 
 private:
 

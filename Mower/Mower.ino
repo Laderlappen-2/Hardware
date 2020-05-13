@@ -51,5 +51,5 @@ void loop()
 	commandHandler->run();
 	btController->run();
 	driver->run();
-	//engine->run();
+	engine->run();
 }

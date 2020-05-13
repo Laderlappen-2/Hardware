@@ -2,6 +2,7 @@
 #include "AbsDriver.h"
 //#include "LinkedList.h"
 #include <ArduinoSTL.h>
+#include <Arduino.h>
 
 class MultiDriver : protected AbsDriver
 {
@@ -29,7 +30,9 @@ protected:
 
 	static void btListener(int data[], int size)
 	{
+    Serial.println("IN MULTIDRIVER LISTENER");
 		MultiDriver::getInstance()->listener(data, size);
+    Serial.println("MULTIDRIVER LISTENER DATA SENT");
 	}
 
 private:

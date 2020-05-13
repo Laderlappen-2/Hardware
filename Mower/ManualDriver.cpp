@@ -66,5 +66,7 @@ void ManualDriver::listener(int data[], int size) //0 speed - 1 turn
 
 	int turn = data[1];
 
+  Serial.println("MANUAL DRIVER DATA:" + speed);
+  
 	sendCMD(speed, turn);
 }
