@@ -24,7 +24,7 @@ public:
 protected:
 
 
-	static const int safetyDistance = 10;
+	static const int safetyDistance = 15;
 
 	SensorController* sensorInstance;
 };

@@ -43,17 +43,14 @@ void EngineModule::setTurn(int value)
     //normalize value to [-255,255]
     value = (int)(value * 2.55f);
     value = constrain(value, motorPWMmin, motorPWMmax);
-
-    //Adjusting steer sensitivity
-    const double max = 100;
-    const int power = 4;
-    value = (int)((pow(value, power) / pow(max,power)) * max);
     
     //get the current pwm for each wheel
     int leftPWM = Wheel_Left->getCurPwm();
     int rightPWM = Wheel_Right->getCurPwm();
     int speed = (-rightPWM + leftPWM) / 2;
 
+    //Adjusting steer sensitivity
+    value /= 4;
     //uptade difference between the wheels to match the new turn
     leftPWM = speed - value;
     rightPWM = speed + value;
@@ -101,15 +98,16 @@ void EngineModule::run()
 			state = update;
 		break;
 	case update:
+    Serial.println("EXECUTE COMMAND");
 		execute_command(&current_command);
 
 		//if the time is negative, the cmd will run without a timelimit
-		if (current_command.time_ms < 0)
+		/*if (current_command.time_ms < 0)
 		{
 			_ready = true;
 			state = idle;
 			break;
-		}
+		}*/
 
 		startWait = millis();
 		state = wait;
@@ -118,7 +116,7 @@ void EngineModule::run()
 		if (millis() > startWait + current_command.time_ms)
 		{
 			_ready = true;
-			state = idle;
+			state = end;
 		}
 	case end:
 		if (current_command.time_ms >= 0)

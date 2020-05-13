@@ -81,9 +81,10 @@ bool CommandHandler::runSequence()
 		break;
 
 	case send:// sends the front cmd in the sequense to the engine and removes it from the queue
+    Serial.println("WAITING TO SEND TO ENGINE");
 		if (!engine->isReady())
 			break;
-		//Serial.print("\tSending cmd ");
+		Serial.println("SENDING COMMAND TO ENGINE");
 
 		//Serial.println(SEQUENCE.count());
 		sendCmdToEngine(SEQUENCE.dequeue());
@@ -112,9 +113,19 @@ bool CommandHandler::runSequence()
 	return false;
 }
 
+void CommandHandler::addCommand(EngineModule::cmd command)
+{
+  addCommand(command, nullptr);
+}
+
+void CommandHandler::addCommand(EngineModule::cmd command[], int size)
+{
+  addCommand(command, size, nullptr);
+}
 
 void CommandHandler::addCommand(EngineModule::cmd command, void(*callback)(void))
 {
+  Serial.println("ADD COMMAND COMMANDHANDLER");
 	Queue<EngineModule::cmd> cmdQueue; 
 	cmdQueue.enqueue(command);
 	commandQueue.enqueue(new cmdSequense {cmdQueue, callback});

@@ -32,21 +32,23 @@ void setup()
 
 	commandHandler = CommandHandler::getInstance();
 	commandHandler->init();
+  commandHandler->clear();
 
 	engine = EngineModule::getInstance();
 	engine->init(SLOT1, SLOT2);
+  engine->stopp();
 
 	driver = MultiDriver::getInstance();
 	driver->init();
 	driver->addDriver(new ManualDriver(), (String)driveType_e::manual);
 	driver->addDriver(new AutoDriver(), (String)driveType_e::autonomous);
-  driver->selectDriver(String(manual));
+  driver->selectDriver(String(autonomous));
 }
 
 void loop()
 {
-	commandHandler->run();
+	//commandHandler->run();
 	btController->run();
 	driver->run();
-	engine->run();
+	//engine->run();
 }

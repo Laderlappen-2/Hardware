@@ -25,71 +25,104 @@ void AutoDriver::onActivation()
 
 void AutoDriver::run()
 {
-    enum state_e
-    {
-    idle,
-    avoidCollision,
-    drive
-    };
-    static state_e state = drive;        
-    EngineModule::cmd command;
+  enum state_e
+  {
+    drive,
+    waitForCollision,
+    handleCollision,
+    
+  };
+  static state_e state = drive;        
+  EngineModule::cmd command;
+  EngineModule *engine = EngineModule::getInstance();
+  static unsigned long startWaitTime = 0;
+  const int reverseWait = 2000;
 
+  Serial.println("AUTODRIVER STATE: " + String(state));
 
-    switch (state)
-    {
-    case idle:
-        if (sensorInstance->getUltrasonicValue() < safetyDistance)
-            state = avoidCollision;
-        break;
-    case avoidCollision:
-        commandInstance->stopEngine();
-        commandInstance->clear();          // Should be here ?
-		//TODO Fix syntax
-
-        //EngineModule::cmd command = { -50, 0, 250 };
-        command.speed = -50;
-        command.turnRadius = 0;
-        command.time_ms = 250;
-        commandInstance->addCommand(command);
-        command.speed = 0;
-        command.turnRadius = 25;
-        command.time_ms = 100;
-        commandInstance->addCommand(command);
-
-        //commandInstance->addCommand(new EngineModule::cmd(-50, 0, 250));
-        //commandInstance->addCommand(new EngineModule::cmd(0, 25, 100));
-
-        // TODO rapportera till BT
-        //clock_t start = clock();
-        /*
-            Send a message followed by 'start', which is time elapsed since program start
-            Example @event,X,Y,klocka$ :
-                @1,X,Y,start$
-        
-        */
-        EngineModule* engine = EngineModule::getInstance();
-        EngineModule::point_s point = engine->getPosition();
-        blueInstance->send(BluetoothController::EventType_e::crachAvoidance, point._x, point._y);
-        
-
-        state = drive;
-        break;
+  switch(state)
+  {
     case drive:
+      engine->setSpeed(40);
+      engine->setTurn(0);
+      state = waitForCollision;
+      break;
 
-		//TODO fix syntax        EngineModule::cmd command = new EngineModule::cmd;
-        //EngineModule::cmd command = new EngineModule::cmd;
-        command.speed = 75;
-        command.turnRadius = 0;
-        command.time_ms = -1;
-        commandInstance->addCommand(command);
-        state = idle;
-        break;
+    case waitForCollision:
+      if(sensorInstance->getUltrasonicValue() < safetyDistance)
+      {
+        state = handleCollision;
+        startWaitTime = millis();
+      }
+      break;
+
+    case handleCollision:
+      if(millis() < startWaitTime + reverseWait)
+      {
+        engine->setSpeed(-30);
+        engine->setTurn(60);
+      }
+      else
+        state = drive;
+      break;
+
     default:
-        break;
-    }
+      break;
+  }
+  
 }
 
 void AutoDriver::listener(int[], int)
 {
 
+}
+
+bool AutoDriver::runAvoidCollision()
+{
+  enum state_e
+  {
+    reverse,
+    waitReverse,
+    turn,
+    waitTurn
+  };
+  static state_e state = reverse;
+  const int reverseSpeed = 50;
+  const int reverseWait = 1000;
+  const int turnSpeed = 25;
+  const int turnWait = random(1000, 2500);
+  static unsigned long startWaitTime = 0;
+  EngineModule *engine = EngineModule::getInstance();
+  
+  switch(state)
+  {
+    case reverse:
+      engine->setSpeed(-reverseSpeed);
+      engine->setTurn(0);
+      startWaitTime = millis();
+      state = waitReverse;
+      break;
+    case waitReverse:
+      if(millis() > startWaitTime + reverseWait)
+        state = turn;
+      break;
+    case turn:
+      engine->setSpeed(50);
+      engine->setTurn(100);
+      startWaitTime = millis();
+      state = waitTurn;
+      break;
+    case waitTurn:
+      if(millis() > startWaitTime + turnWait)
+      {
+        state = reverse;
+        return true;
+      }
+      break;
+
+    default:
+      break;
+  }
+  
+  return false;
 }

@@ -38,8 +38,10 @@ public:
 	void run();
 
 	//adds an engine command at the back if the queue
-	void addCommand(EngineModule::cmd,void(*callback)(void) = nullptr);
-	void addCommand(EngineModule::cmd[],int, void(*callback)(void) = nullptr);
+  void addCommand(EngineModule::cmd);
+  void addCommand(EngineModule::cmd[],int);
+	void addCommand(EngineModule::cmd,void(*callback)(void));
+	void addCommand(EngineModule::cmd[],int, void(*callback)(void));
 
 	//cleares the entire command queue but dose NOT stop the engine
 	void clear();
