@@ -56,29 +56,29 @@ public:
     void stopp();
 
 private:
-    EngineModule();
-	
-    void execute_command(cmd*);
+  EngineModule();
+
+  void execute_command(cmd*);
 	void updatePosition();
 
-
+  void setWheels(int, int);
 
 	point_s position;
 
-    MeEncoderOnBoard *Wheel_Right;
-    MeEncoderOnBoard *Wheel_Left;
-    bool _ready = true;
+  MeEncoderOnBoard *Wheel_Right;
+  MeEncoderOnBoard *Wheel_Left;
+  bool _ready = true;
 
-    cmd current_command;
+  cmd current_command;
 
 	const int motorPWMmax = 255;
 	const int motorPWMmin = -255;
 
 	const float _wheelRadius_cm = 0;
-#define DEGREES_PER_MILLIMETER (_wheelRadius_cm * 2 * PI / 360)
-    const float _wheelToWheelGap_cm = 14.6;
+  #define DEGREES_PER_MILLIMETER (_wheelRadius_cm * 2 * PI / 360)
+  const float _wheelToWheelGap_cm = 14.6;
 	double _robotAngle_rad;
 
-    const int _rightWheelOffset = 17;
-    const int _leftWheelOffset = 0;
+  const int _rightWheelOffset = 17;
+  const int _leftWheelOffset = 0;
 };

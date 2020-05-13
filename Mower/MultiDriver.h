@@ -11,7 +11,7 @@ public:
 
 	static MultiDriver* getInstance()
 	{
-		MultiDriver* instance = nullptr;
+		static MultiDriver* instance = nullptr;
 		if (instance == nullptr)
 			instance = new MultiDriver();
 		return instance;

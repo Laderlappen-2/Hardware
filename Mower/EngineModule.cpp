@@ -26,20 +26,19 @@ void EngineModule::setTurn(int value)
 {
 	//normalize value to [-255,255]
 	value = constrain(value, -100, 100);
-	value = (value / 100.0f) * 255;
+	value *= 2.55;
 
 	//get the current pwm for each wheel
-	int leftPWN = Wheel_Left->getCurPwm();
+	int leftPWM = Wheel_Left->getCurPwm();
 	int rightPWM = Wheel_Right->getCurPwm();
 
 	//uptade difference between the wheels to match the new turn
-	int diff = leftPWN - rightPWM;
-	leftPWN += (value - diff) / 2;
+	int diff = leftPWM - rightPWM;
+	leftPWM += (value - diff) / 2;
 	rightPWM -= (value - diff) / 2;
 
 	//set the new pwm
-	Wheel_Left->setMotorPwm(leftPWN);
-	Wheel_Right->setMotorPwm(rightPWM);
+	setWheels(leftPWM, rightPWM);
 }
 
 void EngineModule::setSpeed(int value)
@@ -47,15 +46,16 @@ void EngineModule::setSpeed(int value)
 	//get the current difference between the whels
 	int turn = Wheel_Left->getCurPwm() - Wheel_Right->getCurPwm();
 	//constraints the speed so that turn difference will remain the same
-	int speed = constrain(value, -255 + (turn / 2), 255 - (turn / 2));
+	//int speed = constrain(value, -255 + (turn / 2), 255 - (turn / 2));
+  int speed = constrain(value, -100, 100);
+  speed *= 2.55;
 
 	//gets the current wheel pwm and updates it
 	int leftPWM = Wheel_Left->getCurPwm() + speed;
 	int rightPWM = Wheel_Right->getCurPwm() + speed;
 
 	//set the new pwm
-	Wheel_Left->setMotorPwm(leftPWM);
-	Wheel_Right->setMotorPwm(rightPWM);
+	setWheels(speed, speed);
 }
 
 bool EngineModule::isReady()
@@ -75,6 +75,7 @@ void EngineModule::run()
 
 	Wheel_Right->loop();
 	Wheel_Left->loop();
+  //updatePosition();
 	static state_s state = idle;
 	static unsigned long startWait = 0;
 
@@ -133,8 +134,9 @@ void EngineModule::execute_command(cmd *command)
 
 	if (command->turnRadius == NO_TURN)
 	{
-		Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
-		Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
+    setWheels(command->speed, command->speed);
+		//Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
+		//Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
 		return;
 	}
 
@@ -145,15 +147,17 @@ void EngineModule::execute_command(cmd *command)
 	if (command->turnRadius > 0)
 	{
 		float ratio = rRight / rLeft;
-		Wheel_Right->setMotorPwm(-command->speed * ratio - _rightWheelOffset);
-		Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
+    setWheels(command->speed, command->speed * ratio);
+		//Wheel_Right->setMotorPwm(-command->speed * ratio - _rightWheelOffset);
+		//Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
 	}
 
 	else
 	{
 		float ratio = rLeft / rRight;
-		Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
-		Wheel_Left->setMotorPwm(command->speed * ratio + _leftWheelOffset);
+    setWheels(command->speed * ratio, command->speed);
+		//Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
+		//Wheel_Left->setMotorPwm(command->speed * ratio + _leftWheelOffset);
 	}
 
 
@@ -192,6 +196,13 @@ void EngineModule::updatePosition()
 
 void EngineModule::stopp()
 {
+  Serial.println(Wheel_Right->getCurPwm());
 	Wheel_Right->setMotorPwm(0);
 	Wheel_Left->setMotorPwm(0);
+}
+
+void EngineModule::setWheels(int left, int right)
+{
+  Wheel_Right->setMotorPwm(-right - _rightWheelOffset);
+  Wheel_Left->setMotorPwm(left + _leftWheelOffset);
 }

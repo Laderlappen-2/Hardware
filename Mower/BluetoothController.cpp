@@ -112,14 +112,10 @@ void BluetoothController::addReciveListner(reciveType_e type, void(*callback)(in
 
 void BluetoothController::sendToListner(rxPackage package)
 {
-  Serial.println("IN SENDTOLISTENER!");
-  Serial.println(package.type);
 	for (int i = 0; i < listners.size(); i++)
 	{
-    Serial.println("LISTENERS: " + listners.at(i).type);
 		if (listners.at(i).type == package.type)
 		{
-      Serial.println("FOUND LISTENER!");
 			int* data = new int[package.data.size()];
 			for (int j = 0; j < package.data.size(); j++)
 			{
