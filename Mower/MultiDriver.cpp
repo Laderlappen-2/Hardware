@@ -1,5 +1,5 @@
 #include "MultiDriver.h"
-
+#include "BluetoothController.h"
  
 
 MultiDriver::MultiDriver() 
@@ -24,6 +24,7 @@ MultiDriver::~MultiDriver()
 void MultiDriver::init()
 {
 	//TODO link bt listner
+	BluetoothController::getInstance()->addReciveListner(BluetoothController::reciveType_e::drive,btListener);
 	AbsDriver::init();
 }
 

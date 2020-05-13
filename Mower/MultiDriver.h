@@ -6,8 +6,15 @@
 class MultiDriver : protected AbsDriver
 {
 public:
-	MultiDriver();
 	~MultiDriver();
+
+	static MultiDriver* getInstance()
+	{
+		MultiDriver* instance = nullptr;
+		if (instance == nullptr)
+			instance = new MultiDriver();
+		return instance;
+	}
 
 	void init();
 	void addDriver(AbsDriver* driver, String name);
@@ -20,7 +27,13 @@ protected:
 	void sendCMD() override;
 	void listener(int[], int) override;
 
+	static void btListener(int data[], int size)
+	{
+		MultiDriver::getInstance()->listener(data, size);
+	}
+
 private:
+	MultiDriver();
 
 	struct driver_s
 	{

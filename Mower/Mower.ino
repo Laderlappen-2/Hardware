@@ -37,7 +37,7 @@ void setup()
 	engine = EngineModule::getInstance();
 	engine->init(SLOT1, SLOT2);
 
-	driver = new MultiDriver();
+	driver = MultiDriver::getInstance();
 	driver->init();
 	driver->addDriver(new ManualDriver(), (String)driveType_e::manual);
 	driver->addDriver(new AutoDriver(), (String)driveType_e::autonomous);
@@ -48,4 +48,5 @@ void loop()
 	commandHandler->run();
 	btController->run();
 	driver->run();
+	engine->run();
 }
