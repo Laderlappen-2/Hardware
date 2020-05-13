@@ -38,8 +38,6 @@ void AutoDriver::run()
   static unsigned long startWaitTime = 0;
   const int reverseWait = 2000;
 
-  Serial.println("AUTODRIVER STATE: " + String(state));
-
   switch(state)
   {
     case drive:
@@ -69,7 +67,6 @@ void AutoDriver::run()
     default:
       break;
   }
-  
 }
 
 void AutoDriver::listener(int[], int)
@@ -77,7 +74,7 @@ void AutoDriver::listener(int[], int)
 
 }
 
-bool AutoDriver::runAvoidCollision()
+/*bool AutoDriver::runAvoidCollision()
 {
   enum state_e
   {
@@ -125,4 +122,4 @@ bool AutoDriver::runAvoidCollision()
   }
   
   return false;
-}
+}*/

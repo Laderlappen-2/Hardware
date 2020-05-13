@@ -52,8 +52,8 @@ void EngineModule::setTurn(int value)
     //Adjusting steer sensitivity
     value /= 4;
     //uptade difference between the wheels to match the new turn
-    leftPWM = speed - value;
-    rightPWM = speed + value;
+    leftPWM = speed + value;
+    rightPWM = speed - value;
 
     //adjust for overshoot
     leftPWM = constrain(leftPWM, motorPWMmin, motorPWMmax);
@@ -98,16 +98,7 @@ void EngineModule::run()
 			state = update;
 		break;
 	case update:
-    Serial.println("EXECUTE COMMAND");
 		execute_command(&current_command);
-
-		//if the time is negative, the cmd will run without a timelimit
-		/*if (current_command.time_ms < 0)
-		{
-			_ready = true;
-			state = idle;
-			break;
-		}*/
 
 		startWait = millis();
 		state = wait;
@@ -124,7 +115,6 @@ void EngineModule::run()
 		state = idle;
 		break;
 	default:
-		// TODO felhantering
 		break;
 	}
 }

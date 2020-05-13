@@ -3,7 +3,6 @@
 #include "CommandHandler.h"
 #include "EngineModule.h"
 #include "BluetoothController.h"
-
 #include "MultiDriver.h"
 #include "ManualDriver.h"
 #include "AutoDriver.h"
@@ -42,7 +41,6 @@ void setup()
 	driver->init();
 	driver->addDriver(new ManualDriver(), (String)driveType_e::manual);
 	driver->addDriver(new AutoDriver(), (String)driveType_e::autonomous);
-  driver->selectDriver(String(autonomous));
 }
 
 void loop()
