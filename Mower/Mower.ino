@@ -22,12 +22,14 @@ enum driveType_e
 void switchToAutoListner(int *data, int size)
 {	driver->selectDriver(String(autonomous));}
 void switchToManuelListner(int *data, int size)
-{	driver->selectDriver(String(manual));}
+{
+  Serial.println("IN MANUAL LISTENER");
+  driver->selectDriver(String(manual));
+}
 
 void setup()
 {
 	Serial.begin(115200);
-	btController->init(115200);
 	btController->addReciveListner(BluetoothController::reciveType_e::atomatic, switchToAutoListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::manuall, switchToManuelListner);
 
@@ -41,6 +43,7 @@ void setup()
 	driver->init();
 	driver->addDriver(new ManualDriver(), (String)driveType_e::manual);
 	driver->addDriver(new AutoDriver(), (String)driveType_e::autonomous);
+  Serial.println("SETUP DONE!");
 }
 
 void loop()
@@ -48,5 +51,5 @@ void loop()
 	commandHandler->run();
 	btController->run();
 	driver->run();
-	engine->run();
+	//engine->run();
 }

@@ -47,6 +47,6 @@ private:
 
 	AbsDriver * selectedDriver;
 	typedef LinkedList<driver_s> driverList;
-	driverList drivers; 
+	driverList drivers;
+  #define STOP_IF_NULL if(selectedDriver == nullptr) return;
 };
-

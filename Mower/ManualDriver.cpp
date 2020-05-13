@@ -4,6 +4,7 @@ ManualDriver::ManualDriver()
 {
 	sensorInstance = SensorController::getInstance();
 	commandInstance = CommandHandler::getInstance();
+  engineInstance = EngineModule::getInstance();
 }
 void ManualDriver::init()
 {
@@ -13,6 +14,8 @@ void ManualDriver::sendCMD(int speed, int turn)
 	//if (turn == 0)
 		//turn = 3001;
 	//EngineModule::setCommand(EngineModule::cmd(speed, turn, 3)) //TODO change 3ms time
+  engineInstance->setSpeed(speed);
+  engineInstance->setTurn(turn);
 }
 void ManualDriver::run() 
 {

@@ -1,5 +1,5 @@
 #pragma once
-//#include "EngineModule.h
+#include "EngineModule.h"
 #include "CommandHandler.h"
 #include "AbsDriver.h"
 #include <time.h>
@@ -21,6 +21,5 @@ private:
 
 	SensorController* sensorInstance;
 	CommandHandler* commandInstance;
-
-
+  EngineModule* engineInstance;
 };
