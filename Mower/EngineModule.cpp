@@ -70,6 +70,7 @@ void EngineModule::run()
 		idle,
 		update,
 		wait,
+		end,
 	};
 
 	Wheel_Right->loop();
@@ -88,11 +89,7 @@ void EngineModule::run()
 	{
 	case idle:
 		if (!isReady())
-		{
 			state = update;
-		}
-		else if (current_command.time_ms >= 0)
-			stopp();
 		break;
 	case update:
 		execute_command(&current_command);
@@ -114,6 +111,10 @@ void EngineModule::run()
 			_ready = true;
 			state = idle;
 		}
+	case end:
+		if (current_command.time_ms >= 0)
+			stopp();
+		state = idle;
 		break;
 	default:
 		// TODO felhantering
