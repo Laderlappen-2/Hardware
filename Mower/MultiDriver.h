@@ -30,9 +30,7 @@ protected:
 
 	static void btListener(int data[], int size)
 	{
-    Serial.println("IN MULTIDRIVER LISTENER");
 		MultiDriver::getInstance()->listener(data, size);
-    Serial.println("MULTIDRIVER LISTENER DATA SENT");
 	}
 
 private:

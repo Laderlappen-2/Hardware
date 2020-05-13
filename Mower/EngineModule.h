@@ -73,12 +73,12 @@ private:
 
 	const int motorPWMmax = 255;
 	const int motorPWMmin = -255;
-
+  
 	const float _wheelRadius_cm = 0;
   #define DEGREES_PER_MILLIMETER (_wheelRadius_cm * 2 * PI / 360)
   const float _wheelToWheelGap_cm = 14.6;
 	double _robotAngle_rad;
 
-  const int _rightWheelOffset = 17;
+  const int _rightWheelOffset = 0;
   const int _leftWheelOffset = 0;
 };

@@ -22,10 +22,7 @@ enum driveType_e
 void switchToAutoListner(int *data, int size)
 {	driver->selectDriver(String(autonomous));}
 void switchToManuelListner(int *data, int size)
-{
-  Serial.println("IN MANUAL LISTENER");
-  driver->selectDriver(String(manual));
-}
+{ driver->selectDriver(String(manual));}
 
 void setup()
 {
@@ -43,7 +40,7 @@ void setup()
 	driver->init();
 	driver->addDriver(new ManualDriver(), (String)driveType_e::manual);
 	driver->addDriver(new AutoDriver(), (String)driveType_e::autonomous);
-  Serial.println("SETUP DONE!");
+  driver->selectDriver(String(manual));
 }
 
 void loop()
@@ -51,5 +48,5 @@ void loop()
 	commandHandler->run();
 	btController->run();
 	driver->run();
-	//engine->run();
+	engine->run();
 }

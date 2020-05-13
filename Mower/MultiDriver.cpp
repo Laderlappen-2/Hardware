@@ -54,14 +54,10 @@ void MultiDriver::selectDriver(String name)
 	  //	list = list->getNext();
 	  //}
 
-
-	Serial.println("MULTIDRIVER NAME: " + name);
 	for (int i = 0; i < drivers.size(); i++)
 	{
-		Serial.println("ITEM: " + drivers.at(i).nickname);
 		if (drivers.at(i).nickname == name)
 		{
-			Serial.println("FOUND DRIVER!");
 			if (selectedDriver != nullptr)
 				selectedDriver->onDeactivation();
 			selectedDriver = drivers.at(i).driver;

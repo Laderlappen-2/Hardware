@@ -22,40 +22,48 @@ void EngineModule::setCommand(cmd command)
 	_ready = false;
 }
 
-void EngineModule::setTurn(int value)
-{
-	//normalize value to [-255,255]
-	value = constrain(value, -100, 100);
-	value *= 2.55;
+void EngineModule::setSpeed(int value)
+{ 
+    value *= 2.55;
+    //get the current difference between the wheels
+    int turn = Wheel_Right->getCurPwm() - Wheel_Left->getCurPwm();
+    //constraints the speed so that turn difference will remain the same
+    int speed = constrain(value, motorPWMmin + (turn / 2), motorPWMmax - (turn / 2));
 
-	//get the current pwm for each wheel
-	int leftPWM = Wheel_Left->getCurPwm();
-	int rightPWM = Wheel_Right->getCurPwm();
+    //gets the current wheel pwm and updates it
+    int leftPWM =  speed - turn/2;
+    int rightPWM = speed + turn/2;
 
-	//uptade difference between the wheels to match the new turn
-	int diff = leftPWM - rightPWM;
-	leftPWM += (value - diff) / 2;
-	rightPWM -= (value - diff) / 2;
-
-	//set the new pwm
-	setWheels(leftPWM, rightPWM);
+    //set the new pwm
+    setWheels(leftPWM, rightPWM);
 }
 
-void EngineModule::setSpeed(int value)
+void EngineModule::setTurn(int value)
 {
-	//get the current difference between the whels
-	int turn = Wheel_Left->getCurPwm() - Wheel_Right->getCurPwm();
-	//constraints the speed so that turn difference will remain the same
-	//int speed = constrain(value, -255 + (turn / 2), 255 - (turn / 2));
-  int speed = constrain(value, -100, 100);
-  speed *= 2.55;
+    //normalize value to [-255,255]
+    value = (int)(value * 2.55f);
+    value = constrain(value, motorPWMmin, motorPWMmax);
 
-	//gets the current wheel pwm and updates it
-	int leftPWM = Wheel_Left->getCurPwm() + speed;
-	int rightPWM = Wheel_Right->getCurPwm() + speed;
+    //Adjusting steer sensitivity
+    const double max = 100;
+    const int power = 4;
+    value = (int)((pow(value, power) / pow(max,power)) * max);
+    
+    //get the current pwm for each wheel
+    int leftPWM = Wheel_Left->getCurPwm();
+    int rightPWM = Wheel_Right->getCurPwm();
+    int speed = (-rightPWM + leftPWM) / 2;
 
-	//set the new pwm
-	setWheels(speed, speed);
+    //uptade difference between the wheels to match the new turn
+    leftPWM = speed - value;
+    rightPWM = speed + value;
+
+    //adjust for overshoot
+    leftPWM = constrain(leftPWM, motorPWMmin, motorPWMmax);
+    rightPWM = constrain(rightPWM, motorPWMmin, motorPWMmax);
+
+    //set the new pwm
+    setWheels(leftPWM, rightPWM);
 }
 
 bool EngineModule::isReady()
@@ -196,7 +204,6 @@ void EngineModule::updatePosition()
 
 void EngineModule::stopp()
 {
-  Serial.println(Wheel_Right->getCurPwm());
 	Wheel_Right->setMotorPwm(0);
 	Wheel_Left->setMotorPwm(0);
 }

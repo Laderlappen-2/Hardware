@@ -11,11 +11,8 @@ void ManualDriver::init()
 }
 void ManualDriver::sendCMD(int speed, int turn) 
 {
-	//if (turn == 0)
-		//turn = 3001;
-	//EngineModule::setCommand(EngineModule::cmd(speed, turn, 3)) //TODO change 3ms time
   engineInstance->setSpeed(speed);
-  //engineInstance->setTurn(turn);
+  engineInstance->setTurn(turn);
 }
 void ManualDriver::run() 
 {
@@ -65,8 +62,6 @@ void ManualDriver::listener(int data[], int size) //0 speed - 1 turn
 	int speed = data[0];
 
 	int turn = data[1];
-
-  Serial.println("MANUAL DRIVER DATA:" + speed);
   
 	sendCMD(speed, turn);
 }
