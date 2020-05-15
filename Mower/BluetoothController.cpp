@@ -41,17 +41,16 @@ void BluetoothController::runTX()
 			state = sending;
 		  message = sendBuffer.dequeue();
     }
-
 		break;
+    
 	case sending:
 		Serial.print(message);
 		startWait = millis();
 		//state = waiting;
     state = idle;
-
 		break;
+    
 	case waiting:
-
 		if (ackRecived)
 		{
 			state = idle;
@@ -61,6 +60,7 @@ void BluetoothController::runTX()
 		if (millis() > startWait + waitTimeout_ms)
 			state = sending;
 		break;
+    
 	default:
 		break;
 	}
@@ -92,7 +92,7 @@ void BluetoothController::runRX()
 		sendAcknowledge(package.type);
 }
 
-void BluetoothController::send(EventType_e type, int xPos, int yPos)
+void BluetoothController::send(EventType_e type, float xPos, float yPos)
 {
 	sendBuffer.enqueue(
 		ioStart + String(type) + 
@@ -128,8 +128,6 @@ void BluetoothController::sendToListner(rxPackage package)
 	}
 }
 
-
-
 BluetoothController::rxPackage BluetoothController::unpackMessage(String rawMessage)
 {
 	String message = trim(rawMessage);
@@ -150,6 +148,7 @@ String BluetoothController::trim(String message)
   int endIndex = message.indexOf(ioEnd);
 	return (message.substring(startIndex + 1, endIndex));
 }
+
 vector<String> BluetoothController::split(String message, char separator)
 {	
   vector<String> returnVector;
@@ -168,6 +167,7 @@ vector<String> BluetoothController::split(String message, char separator)
   }
   return returnVector;
 }
+
 BluetoothController::rxPackage BluetoothController::map(String type, String data, String ack)
 {
 	rxPackage package;
@@ -194,7 +194,6 @@ void BluetoothController::sendAcknowledge(reciveType_e type)
 		ioEnd;
 	Serial.print(ackMsg);
 }
-
 
 //############## JONATHANS FUNCTIONS #################
 

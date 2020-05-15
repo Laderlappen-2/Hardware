@@ -26,10 +26,9 @@ public:
     };
 	struct point_s
 	{
-		int _x;
-		int _y;
+		float _x = 0.0;
+		float _y = 0.0;
 	};
-
 
 	static EngineModule *getInstance()
 	{
@@ -45,8 +44,8 @@ public:
   void runOdometri();
 
 	point_s getPosition();
-  int getX();
-  int getY();
+  float getX();
+  float getY();
   void updatePosition();
 
   void setCommand(cmd);
@@ -90,22 +89,18 @@ private:
     }
   }
 
+  #define DEGREES_PER_CENTIMETER (360 / (_wheelRadius_cm * 2 * PI))
+  
 	point_s position;
-
   MeEncoderOnBoard *Wheel_Right;
   MeEncoderOnBoard *Wheel_Left;
   bool _ready = true;
-
   cmd current_command;
-
 	const int motorPWMmax = 255;
 	const int motorPWMmin = -255;
-  
 	const float _wheelRadius_cm = 6.3 / 2;
-  #define DEGREES_PER_CENTIMETER (360 / (_wheelRadius_cm * 2 * PI))
-  const float _wheelToWheelGap_cm = 14.6;
-	double _robotAngle_rad;
-
+  const double _wheelToWheelGap_cm = 14.6;
+  double _robotAngle_rad = 0;
   const int _rightWheelOffset = 0;
   const int _leftWheelOffset = 0;
 };

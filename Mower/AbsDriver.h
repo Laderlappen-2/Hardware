@@ -13,18 +13,14 @@ public:
 	AbsDriver();
 
 	virtual void init();
-
 	virtual	void run();
 	virtual	void sendCMD();
 	virtual	void listener(int[], int);
-
-
 	virtual void onActivation();
 	virtual void onDeactivation();
+  
 protected:
 
-
 	static const int safetyDistance = 15;
-
 	SensorController* sensorInstance;
 };

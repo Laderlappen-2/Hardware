@@ -31,11 +31,9 @@ void setup()
 
 	commandHandler = CommandHandler::getInstance();
 	commandHandler->init();
-  //commandHandler->clear();
 
 	engine = EngineModule::getInstance();
 	engine->init(SLOT1, SLOT2);
-  //engine->stopp();
 
 	driver = MultiDriver::getInstance();
 	driver->init();
@@ -46,7 +44,6 @@ void setup()
 
 void loop()
 {
-	//commandHandler->run();
 	btController->run();
 	driver->run();
 	engine->runOdometri();

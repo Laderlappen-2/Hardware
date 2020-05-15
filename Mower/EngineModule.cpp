@@ -20,14 +20,16 @@ void EngineModule::init(int slot1, int slot2)
   TCCR2A = _BV(WGM21) | _BV(WGM20);
   TCCR2B = _BV(CS21);
 
-  /*Wheel_Right->setPulse(9);
+  //Serial.println("CURRENT X-POSITION: " + String(getX()));
+  //Serial.println("CURRENT Y-POSITION: " + String(getY()));
+  Wheel_Right->setPulse(9);
   Wheel_Left->setPulse(9);
-  Wheel_Right->setRatio(39.267);
-  Wheel_Left->setRatio(39.267);
+  Wheel_Right->setRatio(19.792);
+  Wheel_Left->setRatio(19.792);
   Wheel_Right->setPosPid(1.8,0,1.2);
   Wheel_Left->setPosPid(1.8,0,1.2);
   Wheel_Right->setSpeedPid(0.18,0,0);
-  Wheel_Left->setSpeedPid(0.18,0,0);*/
+  Wheel_Left->setSpeedPid(0.18,0,0);
 }
 
 
@@ -151,12 +153,12 @@ EngineModule::point_s EngineModule::getPosition()
 	return position;
 }
 
-int EngineModule::getX()
+float EngineModule::getX()
 {
   return position._x;
 }
 
-int EngineModule::getY()
+float EngineModule::getY()
 {
   return position._y;
 }
@@ -197,21 +199,22 @@ void EngineModule::execute_command(cmd *command)
 }
 
 void EngineModule::updatePosition()
-{   
+{
+  //Serial.println("CURRENT SPEED: " + String(Wheel_Right->getCurrentSpeed()));
 	static long oldAngleLeft =0;
 	static long oldAngleRight = 0;
 	// get the angular distance traveled by each wheel since the last update
-	double leftDegrees = oldAngleLeft - Wheel_Left->getCurPos();
+	double leftDegrees = oldAngleLeft + Wheel_Left->getCurPos();
 	double rightDegrees = oldAngleRight - Wheel_Right->getCurPos();
 
   //Serial.println("LEFT DEGREES IN UPDATEPOSITION: " + String(leftDegrees));
   //Serial.println("RIGHT DEGREES IN UPDATEPOSITION: " + String(rightDegrees));
  
-	oldAngleLeft = Wheel_Left->getCurPos();
+	oldAngleLeft = -Wheel_Left->getCurPos();
 	oldAngleRight = Wheel_Right->getCurPos();
 
-  //Serial.println("OLD ANGLE LEFT IN UPDATEPOSITION: " + String(oldAngleLeft));
-  //Serial.println("OLD ANGLE RIGHT IN UPDATEPOSITION: " + String(oldAngleRight));
+  //Serial.println("CURRENT POSITION LEFT: " + String(leftDegrees));
+  //Serial.println("CURRENT POSITION RIGHT : " + String(rightDegrees));
 
 	// convert the angular distances to linear distances
 	double dLeft = leftDegrees / DEGREES_PER_CENTIMETER;
@@ -221,7 +224,7 @@ void EngineModule::updatePosition()
 	double dCenter = (dLeft + dRight) / 2.0;
 
 	// calculate Colin's change in angle
-	double phi = (dRight - dLeft) / (double)_wheelToWheelGap_cm;
+	double phi = (dRight - dLeft) / _wheelToWheelGap_cm;
 	// add the change in angle to the previous angle
 	_robotAngle_rad += phi;
 	// constrain _theta to the range 0 to 2 pi

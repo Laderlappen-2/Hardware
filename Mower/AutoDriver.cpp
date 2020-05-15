@@ -41,7 +41,6 @@ void AutoDriver::run()
   switch(state)
   {
     case drive:
-      //Serial.println("IN DRIVE");
       engine->setSpeed(40);
       engine->setTurn(0);
       state = waitForCollision;
@@ -52,8 +51,9 @@ void AutoDriver::run()
       {
         engine->updatePosition();
         //bluetoothInstance->send(bluetoothInstance->EventType_e::crachAvoidance, engine->getX(), engine->getY());
-        Serial.println("CURRENT X-POSITION: " + String(engine->getX()));
-        Serial.println("CURRENT Y-POSITION: " + String(engine->getY()));
+        String x = String(engine->getX());
+        String y = String(engine->getY());
+        Serial.print("@1," + x + ";" + y + "$");
         state = handleCollision;
         startWaitTime = millis();
       }

@@ -44,7 +44,7 @@ public:
 	void init(int baud);
 
 	//send an event to the app togehter with XY coordinates
-	void send(EventType_e,int,int);
+	void send(EventType_e,float,float);
 	//adds a listner that listen for a specific rx type and will be called when it is recived
 	void addReciveListner(reciveType_e,void(*callback)(int[],int));
 
