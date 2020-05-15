@@ -42,6 +42,7 @@ public:
 
 
   void run();
+  void runOdometri();
 
 	point_s getPosition();
   int getX();

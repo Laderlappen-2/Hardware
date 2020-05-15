@@ -78,8 +78,8 @@ void EngineModule::run()
 		end,
 	};
 
-	Wheel_Right->loop();
-	Wheel_Left->loop();
+	//Wheel_Right->loop();
+	//Wheel_Left->loop();
   //updatePosition();
 	static state_s state = idle;
 	static unsigned long startWait = 0;
@@ -117,6 +117,13 @@ void EngineModule::run()
 	default:
 		break;
 	}
+}
+
+void EngineModule::runOdometri()
+{
+	Wheel_Right->loop();
+	Wheel_Left->loop();
+	updatePosition();
 }
 
 EngineModule::point_s EngineModule::getPosition()
