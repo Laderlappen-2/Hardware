@@ -54,7 +54,7 @@ void MultiDriver::selectDriver(String name)
     if(drivers.at(i).nickname == name)
     {
       selectedDriver = drivers.at(i).driver;
-      Serial.println(String(drivers.at(i).nickname) + " SELECTED");
+      //Serial.println(String(drivers.at(i).nickname) + " SELECTED");
     }
   }
 }

@@ -41,6 +41,7 @@ void AutoDriver::run()
   switch(state)
   {
     case drive:
+      //Serial.println("IN DRIVE");
       engine->setSpeed(40);
       engine->setTurn(0);
       state = waitForCollision;
@@ -50,7 +51,9 @@ void AutoDriver::run()
       if(sensorInstance->getUltrasonicValue() < safetyDistance)
       {
         engine->updatePosition();
-        bluetoothInstance->send(bluetoothInstance->EventType_e::crachAvoidance, engine->getX(), engine->getY());
+        //bluetoothInstance->send(bluetoothInstance->EventType_e::crachAvoidance, engine->getX(), engine->getY());
+        Serial.println("CURRENT X-POSITION: " + String(engine->getX()));
+        Serial.println("CURRENT Y-POSITION: " + String(engine->getY()));
         state = handleCollision;
         startWaitTime = millis();
       }

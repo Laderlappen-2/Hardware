@@ -10,6 +10,24 @@ void EngineModule::init(int slot1, int slot2)
 {
 	Wheel_Right = new MeEncoderOnBoard(slot1);
 	Wheel_Left = new MeEncoderOnBoard(slot2);
+
+  attachInterrupt(Wheel_Right->getIntNum(), isr_process_Wheel_Right, RISING);
+  attachInterrupt(Wheel_Left->getIntNum(), isr_process_Wheel_Left, RISING);
+
+  TCCR1A = _BV(WGM10);
+  TCCR1B = _BV(CS11) | _BV(WGM12);
+
+  TCCR2A = _BV(WGM21) | _BV(WGM20);
+  TCCR2B = _BV(CS21);
+
+  /*Wheel_Right->setPulse(9);
+  Wheel_Left->setPulse(9);
+  Wheel_Right->setRatio(39.267);
+  Wheel_Left->setRatio(39.267);
+  Wheel_Right->setPosPid(1.8,0,1.2);
+  Wheel_Left->setPosPid(1.8,0,1.2);
+  Wheel_Right->setSpeedPid(0.18,0,0);
+  Wheel_Left->setSpeedPid(0.18,0,0);*/
 }
 
 
@@ -121,6 +139,8 @@ void EngineModule::run()
 
 void EngineModule::runOdometri()
 {
+  Wheel_Left->updateCurPos();
+  Wheel_Right->updateCurPos();
 	Wheel_Right->loop();
 	Wheel_Left->loop();
 	updatePosition();
@@ -183,13 +203,19 @@ void EngineModule::updatePosition()
 	// get the angular distance traveled by each wheel since the last update
 	double leftDegrees = oldAngleLeft - Wheel_Left->getCurPos();
 	double rightDegrees = oldAngleRight - Wheel_Right->getCurPos();
+
+  //Serial.println("LEFT DEGREES IN UPDATEPOSITION: " + String(leftDegrees));
+  //Serial.println("RIGHT DEGREES IN UPDATEPOSITION: " + String(rightDegrees));
+ 
 	oldAngleLeft = Wheel_Left->getCurPos();
 	oldAngleRight = Wheel_Right->getCurPos();
 
+  //Serial.println("OLD ANGLE LEFT IN UPDATEPOSITION: " + String(oldAngleLeft));
+  //Serial.println("OLD ANGLE RIGHT IN UPDATEPOSITION: " + String(oldAngleRight));
 
 	// convert the angular distances to linear distances
-	double dLeft = leftDegrees / DEGREES_PER_MILLIMETER;
-	double dRight = rightDegrees / DEGREES_PER_MILLIMETER;
+	double dLeft = leftDegrees / DEGREES_PER_CENTIMETER;
+	double dRight = rightDegrees / DEGREES_PER_CENTIMETER;
 
 	// calculate the length of the arc traveled by Colin
 	double dCenter = (dLeft + dRight) / 2.0;
