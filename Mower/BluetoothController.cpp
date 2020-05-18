@@ -1,4 +1,5 @@
 #include "BluetoothController.h"
+#include "EngineModule.h"
 #include <Arduino.h>
 
 
@@ -29,22 +30,33 @@ void BluetoothController::runTX()
 	};
 	static state_e state = idle;
 	static const int waitTimeout_ms = 3000;
+  static const int waitTimeoutSend = 2000;
+  static unsigned long startWaitSend = 0;
 	static long startWait = 0;
 	static String message = "";
+  EngineModule *engine = EngineModule::getInstance();
 
 	switch (state)
 	{
 	case idle:
-		if (!sendBuffer.isEmpty())
+    if(millis() > startWaitSend + waitTimeoutSend)
+    {
+      state = sending;
+    }
+		/*if (!sendBuffer.isEmpty())
     {
 			state = sending;
 		  message = sendBuffer.dequeue();
-    }
+    }*/
 		break;
     
 	case sending:
-		Serial.print(message);
-		startWait = millis();
+		/*Serial.print(message);
+		startWait = millis();*/
+    String x = String(engine->getX());
+    String y = String(engine->getY());
+    Serial.print("@0," + x + ";" + y + "$");
+    startWaitSend = millis();
     state = idle;
 		break;
     
