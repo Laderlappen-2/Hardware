@@ -1,6 +1,5 @@
 #pragma once
 #include "AbsDriver.h"
-//#include "LinkedList.h"
 #include <ArduinoSTL.h>
 #include <Arduino.h>
 
@@ -47,7 +46,6 @@ private:
 	};
 
 	AbsDriver * selectedDriver;
-	//typedef LinkedList<driver_s> driverList;
 	typedef vector<driver_s> driverList;
 
 	driverList drivers;

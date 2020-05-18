@@ -43,8 +43,6 @@ private:
 	int _itemCount;
 };
 
-
-
 //---------template class implementation ----------
 template<class T>
 inline Queue<T>::Queue()
@@ -75,7 +73,6 @@ inline T Queue<T>::dequeue()
 {
 	if (isEmpty())
 	{
-		//Serial.println("QUEUE: can't deqeue, queue is empty");
 		return;
 	}
 

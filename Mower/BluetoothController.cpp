@@ -8,7 +8,6 @@ BluetoothController::BluetoothController()
 
 void BluetoothController::init(int baud)
 {
-	//Serial.begin(baud);
 }
 
 BluetoothController::~BluetoothController()
@@ -46,7 +45,6 @@ void BluetoothController::runTX()
 	case sending:
 		Serial.print(message);
 		startWait = millis();
-		//state = waiting;
     state = idle;
 		break;
     
@@ -193,48 +191,4 @@ void BluetoothController::sendAcknowledge(reciveType_e type)
 		ioSeperator + 'A' +
 		ioEnd;
 	Serial.print(ackMsg);
-}
-
-//############## JONATHANS FUNCTIONS #################
-
-// Message format: @VELOCITY;TURN;LIGHT;HONK;AUTODRIVE$    @(-255 - 255);(-255 - 255);1/0;1/0;1/0$
-void BluetoothController::decodeMessage(String msg)
-{
-  int idx1 = msg.indexOf(';');
-  String velocityStr = msg.substring(1, idx1);
-
-  int idx2 = msg.indexOf(';', idx1 + 1);
-  String turnStr = msg.substring(idx1 + 1, idx2);
-
-  int idx3 = msg.indexOf(';', idx2 + 1);
-  String lightStr = msg.substring(idx2 + 1, idx3);
-
-  int idx4 = msg.indexOf(';', idx3 + 1);
-  String honkStr = msg.substring(idx3 + 1, idx4);
-
-  int idx5 = msg.indexOf('\0', idx4 + 1);
-  String autodriveStr = msg.substring(idx4 + 1, idx5);
-
-  AppInstructions* appInstructions = AppInstructions::getInstance();
-  appInstructions->setInstructions(velocityStr.toInt(), turnStr.toInt(), lightStr.toInt(), honkStr.toInt(), autodriveStr.toInt());
-  appInstructions->setInstructionsAvailable(true);
-}
-
-void BluetoothController::readBluetooth()
-{
-	String message;
-
-	while(Serial.available() > 0)
-	{
-		delay(10);
-		char currentChar = Serial.read();
-
-		if(currentChar == '$')
-			break;
-
-		message += currentChar;
-	}
-
-	if(message.charAt(0) == '@')
-		decodeMessage(message);
 }

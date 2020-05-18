@@ -3,7 +3,6 @@
 
 EngineModule::EngineModule()
 {
-
 }
 
 void EngineModule::init(int slot1, int slot2)
@@ -20,8 +19,6 @@ void EngineModule::init(int slot1, int slot2)
   TCCR2A = _BV(WGM21) | _BV(WGM20);
   TCCR2B = _BV(CS21);
 
-  //Serial.println("CURRENT X-POSITION: " + String(getX()));
-  //Serial.println("CURRENT Y-POSITION: " + String(getY()));
   Wheel_Right->setPulse(9);
   Wheel_Left->setPulse(9);
   Wheel_Right->setRatio(19.792);
@@ -35,9 +32,6 @@ void EngineModule::init(int slot1, int slot2)
 
 void EngineModule::setCommand(cmd command)
 {
-	//current_command.speed = command.speed;
-	//current_command.turnRadius = command.turnRadius;
-	//current_command.time_ms = command.time_ms;
 	current_command = command;
 	_ready = false;
 }
@@ -97,10 +91,6 @@ void EngineModule::run()
 		wait,
 		end,
 	};
-
-	//Wheel_Right->loop();
-	//Wheel_Left->loop();
-  //updatePosition();
 	static state_s state = idle;
 	static unsigned long startWait = 0;
 
@@ -170,8 +160,6 @@ void EngineModule::execute_command(cmd *command)
 	if (command->turnRadius == NO_TURN)
 	{
     setWheels(command->speed, command->speed);
-		//Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
-		//Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
 		return;
 	}
 
@@ -183,16 +171,12 @@ void EngineModule::execute_command(cmd *command)
 	{
 		float ratio = rRight / rLeft;
     setWheels(command->speed, command->speed * ratio);
-		//Wheel_Right->setMotorPwm(-command->speed * ratio - _rightWheelOffset);
-		//Wheel_Left->setMotorPwm(command->speed + _leftWheelOffset);
 	}
 
 	else
 	{
 		float ratio = rLeft / rRight;
     setWheels(command->speed * ratio, command->speed);
-		//Wheel_Right->setMotorPwm(-command->speed - _rightWheelOffset);
-		//Wheel_Left->setMotorPwm(command->speed * ratio + _leftWheelOffset);
 	}
 
 
@@ -200,21 +184,14 @@ void EngineModule::execute_command(cmd *command)
 
 void EngineModule::updatePosition()
 {
-  //Serial.println("CURRENT SPEED: " + String(Wheel_Right->getCurrentSpeed()));
 	static long oldAngleLeft =0;
 	static long oldAngleRight = 0;
 	// get the angular distance traveled by each wheel since the last update
 	double leftDegrees = oldAngleLeft + Wheel_Left->getCurPos();
 	double rightDegrees = oldAngleRight - Wheel_Right->getCurPos();
-
-  //Serial.println("LEFT DEGREES IN UPDATEPOSITION: " + String(leftDegrees));
-  //Serial.println("RIGHT DEGREES IN UPDATEPOSITION: " + String(rightDegrees));
  
 	oldAngleLeft = -Wheel_Left->getCurPos();
 	oldAngleRight = Wheel_Right->getCurPos();
-
-  //Serial.println("CURRENT POSITION LEFT: " + String(leftDegrees));
-  //Serial.println("CURRENT POSITION RIGHT : " + String(rightDegrees));
 
 	// convert the angular distances to linear distances
 	double dLeft = leftDegrees / DEGREES_PER_CENTIMETER;

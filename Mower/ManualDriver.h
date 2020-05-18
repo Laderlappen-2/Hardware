@@ -1,6 +1,5 @@
 #pragma once
 #include "EngineModule.h"
-#include "CommandHandler.h"
 #include "AbsDriver.h"
 #include <time.h>
 
@@ -20,6 +19,5 @@ private:
 	bool sensorOn = false;
 
 	SensorController* sensorInstance;
-	CommandHandler* commandInstance;
-  EngineModule* engineInstance;
+	EngineModule* engineInstance;
 };

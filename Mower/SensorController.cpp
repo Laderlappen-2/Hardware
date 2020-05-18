@@ -1,10 +1,7 @@
 #include "SensorController.h"
 
-
 SensorController::SensorController(){}
-
 SensorController::~SensorController(){}
-
 
 double SensorController::getUltrasonicValue()
 {

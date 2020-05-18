@@ -1,13 +1,11 @@
 
 #include "MeAuriga.h"
-#include "CommandHandler.h"
 #include "EngineModule.h"
 #include "BluetoothController.h"
 #include "MultiDriver.h"
 #include "ManualDriver.h"
 #include "AutoDriver.h"
 
-CommandHandler *commandHandler;
 EngineModule *engine;
 BluetoothController *btController = BluetoothController::getInstance();
 MultiDriver *driver;
@@ -28,9 +26,6 @@ void setup()
 	Serial.begin(115200);
 	btController->addReciveListner(BluetoothController::reciveType_e::atomatic, switchToAutoListner);
 	btController->addReciveListner(BluetoothController::reciveType_e::manuall, switchToManuelListner);
-
-	commandHandler = CommandHandler::getInstance();
-	commandHandler->init();
 
 	engine = EngineModule::getInstance();
 	engine->init(SLOT1, SLOT2);

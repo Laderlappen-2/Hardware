@@ -12,11 +12,9 @@ public:
 			instance = new SensorController();
 		return instance;
 	}
-
     double getUltrasonicValue();
 
 private:
-
     SensorController();
     MeUltrasonicSensor ultraSensor = MeUltrasonicSensor(PORT_10);
 };
