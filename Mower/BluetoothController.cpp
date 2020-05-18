@@ -26,7 +26,6 @@ void BluetoothController::runTX()
 	{
 		idle,
 		sending,
-		waiting,
 	};
 	static state_e state = idle;
 	static const int waitTimeout_ms = 3000;
@@ -43,32 +42,14 @@ void BluetoothController::runTX()
     {
       state = sending;
     }
-		/*if (!sendBuffer.isEmpty())
-    {
-			state = sending;
-		  message = sendBuffer.dequeue();
-    }*/
 		break;
     
 	case sending:
-		/*Serial.print(message);
-		startWait = millis();*/
     String x = String(engine->getX());
     String y = String(engine->getY());
     Serial.print("@0," + x + ";" + y + "$");
     startWaitSend = millis();
     state = idle;
-		break;
-    
-	case waiting:
-		if (ackRecived)
-		{
-			state = idle;
-			ackRecived = false;
-		}
-
-		if (millis() > startWait + waitTimeout_ms)
-			state = sending;
 		break;
     
 	default:
